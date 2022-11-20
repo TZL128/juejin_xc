@@ -10,12 +10,46 @@
     "Other"
   ],
   "activationEvents": [
+    "onView:juejin_xc_activitybar.xc"
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "commands":[
+      {
+        "command": "juejin_xc.sections",
+        "title": "小册章节"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "juejin_xc_activitybar",
+          "icon": "./resource/images/logo.png",
+          "title": "掘金小册"
+        }
+      ]
+    },
     "views": {
-      
-    }
+      "juejin_xc_activitybar": [
+        {
+          "id": "juejin_xc_activitybar.xc",
+          "name": "我的小册"
+        }
+      ]
+    },
+    "configuration":[
+      {
+        "title": "juejin_xc",
+        "properties": {
+          "juejin_xc.cookie":{
+            "type":"string",
+            "description": "掘金cookie"
+          }
+        }
+      }
+    ]
+
+    
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
@@ -43,5 +77,8 @@
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0",
     "@vscode/test-electron": "^2.1.5"
+  },
+  "dependencies": {
+    "axios": "^0.27.2"
   }
 }
