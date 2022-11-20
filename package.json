@@ -18,6 +18,10 @@
       {
         "command": "juejin_xc.sections",
         "title": "小册章节"
+      },
+      {
+        "command":"juejin_xc.setting",
+        "title": "掘金小册插件设置"
       }
     ],
     "viewsContainers": {
@@ -34,6 +38,10 @@
         {
           "id": "juejin_xc_activitybar.xc",
           "name": "我的小册"
+        },
+        {
+          "id": "juejin_xc_activitybar.xc.all",
+          "name": "全部小册"
         }
       ]
     },
@@ -44,12 +52,26 @@
           "juejin_xc.cookie":{
             "type":"string",
             "description": "掘金cookie"
+          },
+          "juejin_xc.options":{
+            "type":"object",
+            "description": "其他配置信息"
           }
         }
       }
+    ],
+    "viewsWelcome":[
+      {
+        "view": "juejin_xc_activitybar.xc",
+        "contents": "欢迎使用，为了更好的使用该插件请先设置用户信息\n[去设置](command:juejin_xc.setting)",
+        "when": "!juejin_xc.ready"
+      },
+      {
+        "view": "juejin_xc_activitybar.xc",
+        "contents": "正在获取数据...",
+        "when": "juejin_xc.ready"
+      }
     ]
-
-    
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

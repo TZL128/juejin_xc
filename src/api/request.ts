@@ -1,8 +1,8 @@
 import { request } from "./axios";
-import { XC, Section } from "#/global";
+import { XC, Section, SectionParams } from "#/global";
 
 //获取的我小册
-export const myXcList = (): Promise<XC[]> => {
+export const xcList = (): Promise<XC[]> => {
   return new Promise(async (resolve) => {
     const { data, code } = await request({
       url: "/booklet/bookletshelflist",
@@ -62,5 +62,20 @@ export const xcSections = (data: {
         };
       })
     );
+  });
+};
+
+//小册内容
+export const xcContent = (data: SectionParams): Promise<string> => {
+  return new Promise(async (resolve) => {
+    const res = await request({
+      url: "/section/get",
+      method: "post",
+      data,
+    });
+    if (res.code !== 200) {
+      return resolve("");
+    }
+    resolve(res.data?.section.content);
   });
 };

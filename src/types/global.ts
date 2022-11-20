@@ -1,3 +1,5 @@
+import { type } from "os";
+
 //小册
 export type XC = {
   background_img: string;
@@ -18,4 +20,9 @@ export type Section = {
   is_update: number;
   is_free: number;
   markdown_show: string;
+};
+
+//章节内容请求参数
+export type SectionParams = {
+  section_id: string;
 };

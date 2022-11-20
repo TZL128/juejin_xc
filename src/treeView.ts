@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { myXcList, xcSections } from "@/api/request";
+import { xcList, xcSections } from "@/api/request";
 import { isReady } from "@/config";
 import { iconSvg } from "@/utils";
 
@@ -12,7 +12,7 @@ export class XCTreeView implements vscode.TreeDataProvider<XCViewItem> {
 
   private renderXCList(): Promise<XCViewItem[]> {
     return new Promise(async (resolve) => {
-      const list = await myXcList();
+      const list = await xcList();
       return resolve(
         list
           .filter((xc) => xc.is_buy)
@@ -43,7 +43,7 @@ export class XCTreeView implements vscode.TreeDataProvider<XCViewItem> {
           item.command = {
             title: "章节内容",
             command: "juejin_xc.sections",
-            arguments: [section],
+            arguments: [section, item],
           };
           section.status === 0 &&
             (item.iconPath = {
