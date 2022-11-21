@@ -26,3 +26,9 @@ export type Section = {
 export type SectionParams = {
   section_id: string;
 };
+
+//小册分类
+export type XCCategory = {
+  category_id: string;
+  category_name: string;
+};

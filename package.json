@@ -10,7 +10,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:juejin_xc_activitybar.xc"
+    "onView:juejin_xc_activitybar.xc",
+    "onView:juejin_xc_activitybar.xc.all"
   ],
   "main": "./dist/extension.js",
   "contributes": {

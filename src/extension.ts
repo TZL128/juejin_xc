@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { XCTreeView } from "./treeView";
+import { XCTreeView, XCAllTreeView } from "./treeView";
 import { sectionWebView } from "./webView";
 import { Section } from "#/global";
 import { iconSvg } from "@/utils";
@@ -10,12 +10,14 @@ import {
   OTHERCONFIG,
 } from "@/config";
 
-export function activate(context: vscode.ExtensionContext) {
+const trigger = () => {
   setConfiguration(OTHERCONFIG, {
     ...(getConfiguration(OTHERCONFIG) as Object),
     activateTime: Date.now(),
   });
+};
 
+const track = (context: vscode.ExtensionContext) => {
   vscode.workspace.onDidChangeConfiguration(() => {
     vscode.commands.executeCommand("setContext", "juejin_xc.ready", isReady());
     const xCTreeViewProvider = new XCTreeView();
@@ -27,9 +29,12 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
       vscode.commands.registerCommand(
         "juejin_xc.sections",
-        (section: Section, treeItem: vscode.TreeItem) => {
+        (buy, section: Section, treeItem: vscode.TreeItem) => {
           if (!section) {
             return;
+          }
+          if (!buy && section.is_free === 0) {
+            return vscode.window.showInformationMessage("请先购买小册");
           }
           if (section.status === 0) {
             return vscode.window.showInformationMessage("小册还在写作中...");
@@ -78,6 +83,20 @@ export function activate(context: vscode.ExtensionContext) {
       )
     );
   });
+};
+
+export function activate(context: vscode.ExtensionContext) {
+  track(context);
+  trigger();
+
+  const xCAllTreeViewProvider = new XCAllTreeView();
+  const treeView = vscode.window.createTreeView(
+    "juejin_xc_activitybar.xc.all",
+    {
+      treeDataProvider: xCAllTreeViewProvider,
+    }
+  );
+  context.subscriptions.push(treeView);
 }
 
 export function deactivate() {}
