@@ -22,7 +22,7 @@ export class XCTreeView implements vscode.TreeDataProvider<XCViewItem> {
               vscode.TreeItemCollapsibleState.Collapsed
             );
             item.contextValue = `XC_${xc.booklet_id}`;
-            item.tooltip = `作者：${xc.user_name}\n描述：${xc.summary}`;
+            item.tooltip = `作者：${xc.user_name}\n描述：${xc.summary}\n总章节数：${xc.section_count}\n已更新章节数：${xc.section_updated_count}`;
             item.iconPath = {
               light: iconSvg("xc"),
               dark: iconSvg("xc"),
@@ -124,7 +124,9 @@ export class XCAllTreeView implements vscode.TreeDataProvider<XCViewItem> {
           item.contextValue = `XC_${xc.booklet_id}_${xc.is_buy}`;
           item.tooltip = `作者：${xc.user_name}\n是否购买：${
             xc.is_buy ? "是" : "否"
-          }\n是否上新：${xc.is_new ? "是" : "否"}\n描述：${xc.summary}`;
+          }\n是否上新：${xc.is_new ? "是" : "否"}\n总章节数：${
+            xc.section_count
+          }\n已更新章节数：${xc.section_updated_count}\n描述：${xc.summary}`;
           const icon = iconSvg(xc.is_new ? "new" : xc.is_buy ? "has" : "xc");
           item.iconPath = {
             light: icon,

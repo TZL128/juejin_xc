@@ -120,6 +120,20 @@ export function activate(context: vscode.ExtensionContext) {
       xcAllTreeViewProvider.refresh();
     })
   );
+  //章节置顶
+  context.subscriptions.push(
+    vscode.commands.registerCommand("juejin_xc.section.top", (arg) => {
+      vscode.window.showInformationMessage("待做");
+      console.log(arg);
+    })
+  );
+  //小册链接
+  context.subscriptions.push(
+    vscode.commands.registerCommand("juejin_xc.link", (arg) => {
+      vscode.window.showInformationMessage("待做");
+      console.log(arg);
+    })
+  );
   track();
 }
 

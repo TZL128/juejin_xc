@@ -17,7 +17,14 @@ export const xcList = (): Promise<XC[]> => {
         const {
           is_buy,
           is_new,
-          base_info: { background_img, booklet_id, title, summary },
+          section_updated_count,
+          base_info: {
+            background_img,
+            booklet_id,
+            title,
+            summary,
+            section_count,
+          },
           user_info: { user_name },
         } = item;
         return {
@@ -28,6 +35,8 @@ export const xcList = (): Promise<XC[]> => {
           title,
           summary,
           user_name,
+          section_count,
+          section_updated_count,
         };
       })
     );
@@ -123,7 +132,14 @@ export const xcCategoryList = (category_id: string): Promise<XC[]> => {
       const {
         is_buy,
         is_new,
-        base_info: { background_img, booklet_id, title, summary },
+        section_updated_count,
+        base_info: {
+          background_img,
+          booklet_id,
+          title,
+          summary,
+          section_count,
+        },
         user_info: { user_name },
       } = item;
       const xc = {
@@ -134,6 +150,8 @@ export const xcCategoryList = (category_id: string): Promise<XC[]> => {
         title,
         summary,
         user_name,
+        section_count,
+        section_updated_count,
       };
       is_buy ? has.push(xc) : no.push(xc);
     });

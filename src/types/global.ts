@@ -1,5 +1,3 @@
-import { type } from "os";
-
 //小册
 export type XC = {
   background_img: string;
@@ -9,6 +7,8 @@ export type XC = {
   is_buy: boolean;
   is_new: boolean;
   user_name: string;
+  section_count: number;
+  section_updated_count: number;
 };
 
 //章节

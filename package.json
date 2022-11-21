@@ -15,8 +15,8 @@
     "onCommand:juejin_xc.sections",
     "onCommand:juejin_xc.setting",
     "onCommand:juejin_xc.refresh",
-    "onCommand:juejin_xc.refresh.all"
-
+    "onCommand:juejin_xc.refresh.all",
+    "onCommand:juejin_xc.link"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -38,6 +38,16 @@
         "command": "juejin_xc.refresh.all",
         "title": "刷新全部小册数据",
         "icon":"./resource/svgs/refresh.svg"
+      },
+      {
+        "command": "juejin_xc.section.top",
+        "title": "小册置顶",
+        "icon":"./resource/svgs/top.svg"
+      },
+      {
+        "command": "juejin_xc.link",
+        "title": "小册链接",
+        "icon":"./resource/svgs/link.svg"
       }
     ],
     "viewsContainers": {
@@ -60,6 +70,18 @@
           "command": "juejin_xc.refresh",
           "when": "view==juejin_xc_activitybar.xc.all",
           "group": "navigation"
+        }
+      ],
+      "view/item/context":[
+        {
+          "command": "juejin_xc.section.top",
+          "when": "view==juejin_xc_activitybar.xc&&viewItem=~/XC/",
+          "group": "inline"
+        },
+        {
+          "command": "juejin_xc.link",
+          "when": "viewItem=~/XC/",
+          "group": "inline"
         }
       ]
     },
