@@ -43,7 +43,7 @@ export class XCTreeView implements vscode.TreeDataProvider<XCViewItem> {
           item.command = {
             title: "章节内容",
             command: "juejin_xc.sections",
-            arguments: [section, item],
+            arguments: [true, section, item, 0],
           };
           section.status === 0 &&
             (item.iconPath = {
@@ -150,7 +150,7 @@ export class XCAllTreeView implements vscode.TreeDataProvider<XCViewItem> {
           item.command = {
             title: "章节内容",
             command: "juejin_xc.sections",
-            arguments: [is_buy, section, item],
+            arguments: [is_buy, section, item, 1],
           };
           item.tooltip = `能否试学：${
             section.is_free ? "能" : "否"

@@ -11,7 +11,12 @@
   ],
   "activationEvents": [
     "onView:juejin_xc_activitybar.xc",
-    "onView:juejin_xc_activitybar.xc.all"
+    "onView:juejin_xc_activitybar.xc.all",
+    "onCommand:juejin_xc.sections",
+    "onCommand:juejin_xc.setting",
+    "onCommand:juejin_xc.refresh",
+    "onCommand:juejin_xc.refresh.all"
+
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -23,6 +28,16 @@
       {
         "command":"juejin_xc.setting",
         "title": "掘金小册插件设置"
+      },
+      {
+        "command": "juejin_xc.refresh",
+        "title": "刷新数据",
+        "icon":"./resource/svgs/refresh.svg"
+      },
+      {
+        "command": "juejin_xc.refresh.all",
+        "title": "刷新全部小册数据",
+        "icon":"./resource/svgs/refresh.svg"
       }
     ],
     "viewsContainers": {
@@ -31,6 +46,20 @@
           "id": "juejin_xc_activitybar",
           "icon": "./resource/images/logo.png",
           "title": "掘金小册"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "juejin_xc.refresh",
+          "when": "view==juejin_xc_activitybar.xc&&juejin_xc.ready",
+          "group": "navigation"
+        },
+        {
+          "command": "juejin_xc.refresh",
+          "when": "view==juejin_xc_activitybar.xc.all",
+          "group": "navigation"
         }
       ]
     },
@@ -71,6 +100,10 @@
         "view": "juejin_xc_activitybar.xc",
         "contents": "正在获取数据...",
         "when": "juejin_xc.ready"
+      },
+      {
+        "view": "juejin_xc_activitybar.xc.all",
+        "contents": "正在努力加载..."
       }
     ]
   },
