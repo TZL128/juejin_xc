@@ -21,7 +21,7 @@ export class XCTreeView implements vscode.TreeDataProvider<XCViewItem> {
             vscode.TreeItemCollapsibleState.Collapsed
           );
           item.contextValue = `XC_${xc.booklet_id}_${xc.is_buy}_${xc.course_type}`;
-          item.tooltip = `作者：${xc.user_name}\n描述：${xc.summary}\n总章节数：${xc.section_count}\n已更新章节数：${xc.section_updated_count}`;
+          item.tooltip = `作者：${xc.user_name}\n总章节数：${xc.section_count}\n已更新章节数：${xc.section_updated_count}\n描述：${xc.summary}`;
           item.iconPath = {
             light: iconSvg("xc"),
             dark: iconSvg("xc"),
