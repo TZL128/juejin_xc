@@ -28,7 +28,7 @@ export class XCTreeView implements vscode.TreeDataProvider<XCViewItem> {
           };
           const order = (getConfiguration(OTHERCONFIG) as Record<string, any>).order || [];
           const index = order.indexOf(xc.booklet_id);
-          index !== -1 ? has.splice(index, 1, item) : no.push(item);
+          index !== -1 ? has.splice(index, 0, item) : no.push(item);
         }
       });
       return resolve([...has,...no]);
