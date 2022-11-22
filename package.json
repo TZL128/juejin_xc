@@ -16,7 +16,8 @@
     "onCommand:juejin_xc.setting",
     "onCommand:juejin_xc.refresh",
     "onCommand:juejin_xc.refresh.all",
-    "onCommand:juejin_xc.link"
+    "onCommand:juejin_xc.link",
+    "onCommand:juejin_xc.sort"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -48,6 +49,11 @@
         "command": "juejin_xc.link",
         "title": "小册链接",
         "icon": "./resource/svgs/link.svg"
+      },
+      {
+        "command": "juejin_xc.sort",
+        "title": "重置排序",
+        "icon": "./resource/svgs/sort.svg"
       }
     ],
     "viewsContainers": {
@@ -63,6 +69,11 @@
       "view/title": [
         {
           "command": "juejin_xc.refresh",
+          "when": "view==juejin_xc_activitybar.xc&&juejin_xc.ready",
+          "group": "navigation"
+        },
+        {
+          "command": "juejin_xc.sort",
           "when": "view==juejin_xc_activitybar.xc&&juejin_xc.ready",
           "group": "navigation"
         },

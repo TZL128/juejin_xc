@@ -148,6 +148,14 @@ export function activate(context: vscode.ExtensionContext) {
       vscode.env.openExternal(vscode.Uri.parse(`https://juejin.cn/${type === 1 ? 'book' : 'video'}/${id}`));
     })
   );
+  context.subscriptions.push(
+    vscode.commands.registerCommand('juejin_xc.sort',()=>{
+      setConfiguration(OTHERCONFIG, {
+        ...(getConfiguration(OTHERCONFIG) as Object),
+        order: [],
+      });
+    })
+  );
   track();
 }
 
