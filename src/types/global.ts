@@ -9,6 +9,7 @@ export type XC = {
   user_name: string;
   section_count: number;
   section_updated_count: number;
+  course_type:number
 };
 
 //章节

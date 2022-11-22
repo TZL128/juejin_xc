@@ -24,6 +24,7 @@ export const xcList = (): Promise<XC[]> => {
             title,
             summary,
             section_count,
+            course_type
           },
           user_info: { user_name },
         } = item;
@@ -37,6 +38,7 @@ export const xcList = (): Promise<XC[]> => {
           user_name,
           section_count,
           section_updated_count,
+          course_type
         };
       })
     );
@@ -139,6 +141,7 @@ export const xcCategoryList = (category_id: string): Promise<XC[]> => {
           title,
           summary,
           section_count,
+          course_type
         },
         user_info: { user_name },
       } = item;
@@ -152,6 +155,7 @@ export const xcCategoryList = (category_id: string): Promise<XC[]> => {
         user_name,
         section_count,
         section_updated_count,
+        course_type
       };
       is_buy ? has.push(xc) : no.push(xc);
     });

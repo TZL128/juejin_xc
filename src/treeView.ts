@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
 import { xcList, xcSections, xcCategory, xcCategoryList } from "@/api/request";
-import { isReady } from "@/config";
+import { isReady, getConfiguration, OTHERCONFIG } from "@/config";
 import { iconSvg } from "@/utils";
 
-class XCViewItem extends vscode.TreeItem {}
+class XCViewItem extends vscode.TreeItem { }
 
 export class XCTreeView implements vscode.TreeDataProvider<XCViewItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<
@@ -13,23 +13,25 @@ export class XCTreeView implements vscode.TreeDataProvider<XCViewItem> {
   private renderXCList(): Promise<XCViewItem[]> {
     return new Promise(async (resolve) => {
       const list = await xcList();
-      return resolve(
-        list
-          .filter((xc) => xc.is_buy)
-          .map((xc) => {
-            const item = new XCViewItem(
-              xc.title,
-              vscode.TreeItemCollapsibleState.Collapsed
-            );
-            item.contextValue = `XC_${xc.booklet_id}`;
-            item.tooltip = `作者：${xc.user_name}\n描述：${xc.summary}\n总章节数：${xc.section_count}\n已更新章节数：${xc.section_updated_count}`;
-            item.iconPath = {
-              light: iconSvg("xc"),
-              dark: iconSvg("xc"),
-            };
-            return item;
-          })
-      );
+      const has: XCViewItem[] = [],no:XCViewItem[]=[];
+      list.forEach(xc => {
+        if (xc.is_buy) {
+          const item = new XCViewItem(
+            xc.title,
+            vscode.TreeItemCollapsibleState.Collapsed
+          );
+          item.contextValue = `XC_${xc.booklet_id}_${xc.is_buy}_${xc.course_type}`;
+          item.tooltip = `作者：${xc.user_name}\n描述：${xc.summary}\n总章节数：${xc.section_count}\n已更新章节数：${xc.section_updated_count}`;
+          item.iconPath = {
+            light: iconSvg("xc"),
+            dark: iconSvg("xc"),
+          };
+          const order = (getConfiguration(OTHERCONFIG) as Record<string, any>).order || [];
+          const index = order.indexOf(xc.booklet_id);
+          index !== -1 ? has.splice(index, 1, item) : no.push(item);
+        }
+      });
+      return resolve([...has,...no]);
     });
   }
 
@@ -121,12 +123,10 @@ export class XCAllTreeView implements vscode.TreeDataProvider<XCViewItem> {
             `${xc.title}`,
             vscode.TreeItemCollapsibleState.Collapsed
           );
-          item.contextValue = `XC_${xc.booklet_id}_${xc.is_buy}`;
-          item.tooltip = `作者：${xc.user_name}\n是否购买：${
-            xc.is_buy ? "是" : "否"
-          }\n是否上新：${xc.is_new ? "是" : "否"}\n总章节数：${
-            xc.section_count
-          }\n已更新章节数：${xc.section_updated_count}\n描述：${xc.summary}`;
+          item.contextValue = `XC_${xc.booklet_id}_${xc.is_buy}_${xc.course_type}`;
+          item.tooltip = `作者：${xc.user_name}\n是否购买：${xc.is_buy ? "是" : "否"
+            }\n是否上新：${xc.is_new ? "是" : "否"}\n总章节数：${xc.section_count
+            }\n已更新章节数：${xc.section_updated_count}\n描述：${xc.summary}`;
           const icon = iconSvg(xc.is_new ? "new" : xc.is_buy ? "has" : "xc");
           item.iconPath = {
             light: icon,
@@ -154,9 +154,8 @@ export class XCAllTreeView implements vscode.TreeDataProvider<XCViewItem> {
             command: "juejin_xc.sections",
             arguments: [is_buy, section, item, 1],
           };
-          item.tooltip = `能否试学：${
-            section.is_free ? "能" : "否"
-          }\n是否创作完毕：${section.status ? "是" : "否"}`;
+          item.tooltip = `能否试学：${section.is_free ? "能" : "否"
+            }\n是否创作完毕：${section.status ? "是" : "否"}`;
 
           if (
             (!is_buy && section.is_free === 0) ||
@@ -193,8 +192,8 @@ export class XCAllTreeView implements vscode.TreeDataProvider<XCViewItem> {
       return type === "category"
         ? this.renderXCList(id)
         : type === "XC"
-        ? this.renderSection(id, buy === "true")
-        : [];
+          ? this.renderSection(id, buy === "true")
+          : [];
     } else {
       return this.renderCategory();
     }

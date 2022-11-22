@@ -24,6 +24,7 @@ const track = () => {
   vscode.workspace.onDidChangeConfiguration(() => {
     setReady();
     vscode.commands.executeCommand("juejin_xc.refresh");
+    vscode.commands.executeCommand("juejin_xc.refresh.all");
   });
 };
 
@@ -111,7 +112,6 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("juejin_xc.refresh", () => {
       xcTreeViewProvider.refresh();
-      xcAllTreeViewProvider.refresh();
     })
   );
   //刷新全部小册数据
@@ -120,21 +120,35 @@ export function activate(context: vscode.ExtensionContext) {
       xcAllTreeViewProvider.refresh();
     })
   );
-  //章节置顶
+  //小册置顶
   context.subscriptions.push(
     vscode.commands.registerCommand("juejin_xc.section.top", (arg) => {
-      vscode.window.showInformationMessage("待做");
-      console.log(arg);
+      if (!arg) { return; }
+      const [, id] = arg.contextValue.split("_");
+      const config= (getConfiguration(OTHERCONFIG) as Record<string,any>);
+      if(!config.order){
+        config.order=[];
+      }
+      if(id===config.order[0]){
+        return;
+      }
+      const index=config.order.indexOf(id);
+      if(index!==-1){
+        config.order.splice(index,1);
+      }
+      config.order.unshift(id);
+      setConfiguration(OTHERCONFIG,config).then(()=>vscode.commands.executeCommand('juejin_xc.refresh'));   
     })
   );
   //小册链接
   context.subscriptions.push(
     vscode.commands.registerCommand("juejin_xc.link", (arg) => {
-      vscode.window.showInformationMessage("待做");
-      console.log(arg);
+      if (!arg) { return; }
+      const [, id, , type] = arg.contextValue.split("_");
+      vscode.env.openExternal(vscode.Uri.parse(`https://juejin.cn/${type === 1 ? 'book' : 'video'}/${id}`));
     })
   );
   track();
 }
 
-export function deactivate() {}
+export function deactivate() { }

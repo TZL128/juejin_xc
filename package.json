@@ -20,34 +20,34 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands":[
+    "commands": [
       {
         "command": "juejin_xc.sections",
         "title": "小册章节"
       },
       {
-        "command":"juejin_xc.setting",
+        "command": "juejin_xc.setting",
         "title": "掘金小册插件设置"
       },
       {
         "command": "juejin_xc.refresh",
         "title": "刷新数据",
-        "icon":"./resource/svgs/refresh.svg"
+        "icon": "./resource/svgs/refresh.svg"
       },
       {
         "command": "juejin_xc.refresh.all",
         "title": "刷新全部小册数据",
-        "icon":"./resource/svgs/refresh.svg"
+        "icon": "./resource/svgs/refresh.svg"
       },
       {
         "command": "juejin_xc.section.top",
         "title": "小册置顶",
-        "icon":"./resource/svgs/top.svg"
+        "icon": "./resource/svgs/top.svg"
       },
       {
         "command": "juejin_xc.link",
         "title": "小册链接",
-        "icon":"./resource/svgs/link.svg"
+        "icon": "./resource/svgs/link.svg"
       }
     ],
     "viewsContainers": {
@@ -72,7 +72,7 @@
           "group": "navigation"
         }
       ],
-      "view/item/context":[
+      "view/item/context": [
         {
           "command": "juejin_xc.section.top",
           "when": "view==juejin_xc_activitybar.xc&&viewItem=~/XC/",
@@ -97,22 +97,22 @@
         }
       ]
     },
-    "configuration":[
+    "configuration": [
       {
         "title": "juejin_xc",
         "properties": {
-          "juejin_xc.cookie":{
-            "type":"string",
+          "juejin_xc.cookie": {
+            "type": "string",
             "description": "掘金cookie"
           },
-          "juejin_xc.options":{
-            "type":"object",
+          "juejin_xc.options": {
+            "type": "object",
             "description": "其他配置信息"
           }
         }
       }
     ],
-    "viewsWelcome":[
+    "viewsWelcome": [
       {
         "view": "juejin_xc_activitybar.xc",
         "contents": "欢迎使用，为了更好的使用该插件请先设置用户信息\n[去设置](command:juejin_xc.setting)",
