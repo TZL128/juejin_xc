@@ -17,19 +17,20 @@ const trigger = () => {
   });
 };
 
-const setReady = () =>
-  vscode.commands.executeCommand("setContext", "juejin_xc.ready", isReady());
+const setContext = (key:string,val:boolean) =>
+  vscode.commands.executeCommand("setContext", key, val);
 
 const track = () => {
   vscode.workspace.onDidChangeConfiguration(() => {
-    setReady();
+    setContext("juejin_xc.ready",isReady());
+    setContext('juejin_xc.noList',false);
     vscode.commands.executeCommand("juejin_xc.refresh");
     vscode.commands.executeCommand("juejin_xc.refresh.all");
   });
 };
 
 export function activate(context: vscode.ExtensionContext) {
-  setReady();
+  setContext("juejin_xc.ready",isReady());
   let xcSectionPanels: Array<vscode.WebviewPanel> = [];
   //我的小册
   const xcTreeViewProvider = new XCTreeView();

@@ -12,8 +12,8 @@ export class XCTreeView implements vscode.TreeDataProvider<XCViewItem> {
 
   private renderXCList(): Promise<XCViewItem[]> {
     return new Promise(async (resolve) => {
-      const list = await xcList();
-      const has: XCViewItem[] = [],no:XCViewItem[]=[];
+      const list = await xcList();      
+      const has: XCViewItem[] = [], no: XCViewItem[] = [];
       list.forEach(xc => {
         if (xc.is_buy) {
           const item = new XCViewItem(
@@ -31,7 +31,8 @@ export class XCTreeView implements vscode.TreeDataProvider<XCViewItem> {
           index !== -1 ? has.splice(index, 0, item) : no.push(item);
         }
       });
-      return resolve([...has,...no]);
+      vscode.commands.executeCommand("setContext", "juejin_xc.noList", has.length+no.length === 0);
+      return resolve([...has, ...no]);
     });
   }
 

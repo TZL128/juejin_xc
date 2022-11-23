@@ -1,9 +1,4 @@
-# Change Log
+## Fixd
 
-All notable changes to the "juejin-xc" extension will be documented in this file.
-
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
-
-- Initial release
+修复用户未购买任何小册时，小册欢迎页显示问题
+2022/11/23 0.0.2
