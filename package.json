@@ -1,11 +1,20 @@
 {
   "name": "juejin-xc",
-  "displayName": "juejin_xc",
+  "displayName": "掘金小册",
   "description": "一款可以在VsCode中阅读掘金小册的插件",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.70.0"
   },
+  
+  "publisher": "TZL",
+  "homepage": "https://github.com/TZL128/juejin_xc",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TZL128/juejin_xc"
+  },
+  "icon": "resource/images/icon.png",
+  "keywords": ["juejin"],
   "categories": [
     "Other"
   ],
