@@ -8,7 +8,7 @@ export const getCooKie = (): string =>
 export const isReady = () => !!getCooKie();
 
 export const setConfiguration = (key: string, value: any) =>
-  vscode.workspace.getConfiguration().update(key, value);
+  vscode.workspace.getConfiguration().update(key, value, true);
 
 export const getConfiguration = (key: string) =>
   vscode.workspace.getConfiguration().get(key);
