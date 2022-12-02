@@ -29,8 +29,9 @@
     "onCommand:juejin_xc.refresh.all",
     "onCommand:juejin_xc.link",
     "onCommand:juejin_xc.sort",
-    "onCommand:juejin_xc.skin"
-
+    "onCommand:juejin_xc.skin",
+    "onCommand:juejin_xc.fontSize.d",
+    "onCommand:juejin_xc.fontSize.x"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -72,6 +73,14 @@
         "command": "juejin_xc.skin",
         "title": "换肤",
         "icon": "./resource/svgs/skin.svg"
+      },
+      {
+        "command": "juejin_xc.fontSize.d",
+        "title": "字体变大"
+      },
+      {
+        "command": "juejin_xc.fontSize.x",
+        "title": "字体变小"
       }
     ],
     "viewsContainers": {
@@ -167,6 +176,20 @@
       {
         "view": "juejin_xc_activitybar.xc.all",
         "contents": "正在努力加载..."
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "juejin_xc.fontSize.d",
+        "key": "ctrl+d",
+        "mac": "cmd+d",
+        "when": "activeWebviewPanelId=~/^XC\\d+/"
+      },
+      {
+        "command": "juejin_xc.fontSize.x",
+        "key": "ctrl+x",
+        "mac": "cmd+x",
+        "when": "activeWebviewPanelId=~/^XC\\d+/"
       }
     ]
   },

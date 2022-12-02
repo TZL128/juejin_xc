@@ -32,6 +32,46 @@ const track = () => {
   });
 };
 
+const updatePannel = (
+  xcSectionPanels: Array<SectionPanel>,
+  config: Record<string, any>,
+  data: { type: "skin" | "fs"; value?: string },
+  isAnimation: boolean = true
+) => {
+  setConfiguration(OTHERCONFIG, config).then(() => {
+    Promise.resolve().then(() => {
+      xcSectionPanels.forEach((p) => {
+        isAnimation && p.webview.postMessage(data);
+        p.reRender();
+      });
+    });
+  });
+};
+
+const updateFontSize = (
+  xcSectionPanels: Array<SectionPanel>,
+  isAdd: boolean = true
+) => {
+  const config = getConfiguration(OTHERCONFIG) as Record<string, any>;
+  const step = isAdd ? 2 : -2;
+  config.fs = isNaN(parseInt(config.fs))
+    ? "13px"
+    : `${parseInt(config.fs) + step}px`;
+  updatePannel(
+    xcSectionPanels,
+    config,
+    { type: "fs", value: config.fs }
+
+  );
+  // setConfiguration(OTHERCONFIG, config).then(() => {
+  //   Promise.resolve().then(() => {
+  //     xcSectionPanels.forEach((p) => {
+  //       p.reRender();
+  //     });
+  //   });
+  // });
+};
+
 export function activate(context: vscode.ExtensionContext) {
   setContext("juejin_xc.ready", isReady());
   let xcSectionPanels: Array<SectionPanel> = [];
@@ -188,22 +228,36 @@ export function activate(context: vscode.ExtensionContext) {
         theme === config.currentTheme ? temp.push(select) : themes.push(select);
       });
       vscode.window.showQuickPick(temp.concat(themes)).then((res) => {
-        config.currentTheme = res?.theme;
-        setConfiguration(OTHERCONFIG, config).then(() => {
-          //不是最新？？？ 加个任务队列
-          Promise.resolve().then(() => {
-            xcSectionPanels.forEach((p) => {
-              p.webview.postMessage({
-                type: "skin",
-                value: res?.theme,
-              });
-              p.reRender();
-            });
-          });
+        // config.currentTheme = res?.theme;
+        updatePannel(xcSectionPanels, config, {
+          type: "skin",
+          value: res?.theme,
         });
+        // setConfiguration(OTHERCONFIG, config).then(() => {
+        //   //不是最新？？？ 加个任务队列
+        //   Promise.resolve().then(() => {
+        //     xcSectionPanels.forEach((p) => {
+        //       p.webview.postMessage({
+        //         type: "skin",
+        //         value: res?.theme,
+        //       });
+        //       p.reRender();
+        //     });
+        //   });
+        // });
       });
-      5;
     })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("juejin_xc.fontSize.d", () =>
+      updateFontSize(xcSectionPanels)
+    )
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("juejin_xc.fontSize.x", () =>
+      updateFontSize(xcSectionPanels, false)
+    )
   );
   track();
 }
