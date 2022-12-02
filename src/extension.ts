@@ -1,37 +1,44 @@
 import * as vscode from "vscode";
 import { XCTreeView, XCAllTreeView } from "./treeView";
 import { sectionWebView } from "./webView";
-import { Section } from "#/global";
+import { Section, SectionPanel } from "#/global";
 import { iconSvg } from "@/utils";
 import {
   isReady,
   setConfiguration,
   getConfiguration,
+  getThemList,
   OTHERCONFIG,
 } from "@/config";
 
-const trigger = () => {
-  setConfiguration(OTHERCONFIG, {
-    ...(getConfiguration(OTHERCONFIG) as Object),
-    activateTime: Date.now(),
-  });
-};
+// const trigger = () => {
+//   setConfiguration(OTHERCONFIG, {
+//     ...(getConfiguration(OTHERCONFIG) as Object),
+//     activateTime: Date.now(),
+//   });
+// };
 
-const setContext = (key:string,val:boolean) =>
+const setContext = (key: string, val: boolean) =>
   vscode.commands.executeCommand("setContext", key, val);
 
 const track = () => {
-  vscode.workspace.onDidChangeConfiguration(() => {
-    setContext("juejin_xc.ready",isReady());
-    setContext('juejin_xc.noList',false);
-    vscode.commands.executeCommand("juejin_xc.refresh");
-    vscode.commands.executeCommand("juejin_xc.refresh.all");
+  vscode.workspace.onDidChangeConfiguration((e) => {
+    if (e.affectsConfiguration("juejin_xc.cookie")) {
+      setContext("juejin_xc.ready", isReady());
+      setContext("juejin_xc.noList", false);
+      vscode.commands.executeCommand("juejin_xc.refresh");
+      vscode.commands.executeCommand("juejin_xc.refresh.all");
+    }
   });
 };
 
 export function activate(context: vscode.ExtensionContext) {
-  setContext("juejin_xc.ready",isReady());
-  let xcSectionPanels: Array<vscode.WebviewPanel> = [];
+  setContext("juejin_xc.ready", isReady());
+  let xcSectionPanels: Array<SectionPanel> = [];
+  const clearAllPannel = () => {
+    xcSectionPanels.forEach((p) => p.dispose());
+    xcSectionPanels = [];
+  };
   //我的小册
   const xcTreeViewProvider = new XCTreeView();
   const myXCTreeView = vscode.window.createTreeView(
@@ -74,16 +81,16 @@ export function activate(context: vscode.ExtensionContext) {
           return vscode.window.showInformationMessage("小册还在写作中...");
         }
         const list = xcSectionPanels.filter(
-          (panel) => panel.viewType === section.section_id
+          (panel) => panel.viewType === `XC${section.section_id}`
         );
         if (list.length) {
           list[0].reveal(vscode.ViewColumn.One);
         } else {
           const sectionPanel = sectionWebView(
-            section.section_id,
+            `XC${section.section_id}`,
             section.title,
             vscode.ViewColumn.One,
-            { treeItem },
+            { treeItem, enableScripts: true },
             { section_id: section.section_id }
           );
           xcSectionPanels.push(sectionPanel);
@@ -112,52 +119,93 @@ export function activate(context: vscode.ExtensionContext) {
   //刷新数据
   context.subscriptions.push(
     vscode.commands.registerCommand("juejin_xc.refresh", () => {
+      clearAllPannel();
       xcTreeViewProvider.refresh();
     })
   );
   //刷新全部小册数据
   context.subscriptions.push(
     vscode.commands.registerCommand("juejin_xc.refresh.all", () => {
+      clearAllPannel();
       xcAllTreeViewProvider.refresh();
     })
   );
   //小册置顶
   context.subscriptions.push(
     vscode.commands.registerCommand("juejin_xc.section.top", (arg) => {
-      if (!arg) { return; }
-      const [, id] = arg.contextValue.split("_");
-      const config= (getConfiguration(OTHERCONFIG) as Record<string,any>);
-      if(!config.order){
-        config.order=[];
-      }
-      if(id===config.order[0]){
+      if (!arg) {
         return;
       }
-      const index=config.order.indexOf(id);
-      if(index!==-1){
-        config.order.splice(index,1);
+      const [, id] = arg.contextValue.split("_");
+      const config = getConfiguration(OTHERCONFIG) as Record<string, any>;
+      if (!config.order) {
+        config.order = [];
+      }
+      if (id === config.order[0]) {
+        return;
+      }
+      const index = config.order.indexOf(id);
+      if (index !== -1) {
+        config.order.splice(index, 1);
       }
       config.order.unshift(id);
-      setConfiguration(OTHERCONFIG,config).then(()=>vscode.commands.executeCommand('juejin_xc.refresh'));   
+      setConfiguration(OTHERCONFIG, config).then(() =>
+        vscode.commands.executeCommand("juejin_xc.refresh")
+      );
     })
   );
   //小册链接
   context.subscriptions.push(
     vscode.commands.registerCommand("juejin_xc.link", (arg) => {
-      if (!arg) { return; }
+      if (!arg) {
+        return;
+      }
       const [, id, , type] = arg.contextValue.split("_");
-      vscode.env.openExternal(vscode.Uri.parse(`https://juejin.cn/${type === 1 ? 'book' : 'video'}/${id}`));
+      vscode.env.openExternal(
+        vscode.Uri.parse(
+          `https://juejin.cn/${type === 1 ? "book" : "video"}/${id}`
+        )
+      );
     })
   );
   context.subscriptions.push(
-    vscode.commands.registerCommand('juejin_xc.sort',()=>{
+    vscode.commands.registerCommand("juejin_xc.sort", () => {
       setConfiguration(OTHERCONFIG, {
         ...(getConfiguration(OTHERCONFIG) as Object),
         order: [],
       });
     })
   );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("juejin_xc.skin", () => {
+      const config = getConfiguration(OTHERCONFIG) as Record<string, any>;
+      type SelectType = { label: string; theme: string };
+      const themes: Array<SelectType> = [],
+        temp: Array<SelectType> = [];
+
+      getThemList().forEach(({ name, theme }) => {
+        const select = { label: name ? name : theme, theme };
+        theme === config.currentTheme ? temp.push(select) : themes.push(select);
+      });
+      vscode.window.showQuickPick(temp.concat(themes)).then((res) => {
+        config.currentTheme = res?.theme;
+        setConfiguration(OTHERCONFIG, config).then(() => {
+          //不是最新？？？ 加个任务队列
+          Promise.resolve().then(() => {
+            xcSectionPanels.forEach((p) => {
+              p.webview.postMessage({
+                type: "skin",
+                value: res?.theme,
+              });
+              p.reRender();
+            });
+          });
+        });
+      });
+      5;
+    })
+  );
   track();
 }
 
-export function deactivate() { }
+export function deactivate() {}

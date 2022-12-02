@@ -1,3 +1,4 @@
+import * as vscode from "vscode";
 //小册
 export type XC = {
   background_img: string;
@@ -33,3 +34,15 @@ export type XCCategory = {
   category_id: string;
   category_name: string;
 };
+
+export type Theme={
+  theme:string;
+  name?:string;
+  color:string;
+  backgroundColor:string;
+};
+
+export interface SectionPanel extends vscode.WebviewPanel {
+  reRender: () => void;
+}
+
