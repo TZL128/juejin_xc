@@ -57,12 +57,7 @@ const updateFontSize = (
   config.fs = isNaN(parseInt(config.fs))
     ? "13px"
     : `${parseInt(config.fs) + step}px`;
-  updatePannel(
-    xcSectionPanels,
-    config,
-    { type: "fs", value: config.fs }
-
-  );
+  updatePannel(xcSectionPanels, config, { type: "fs", value: config.fs });
   // setConfiguration(OTHERCONFIG, config).then(() => {
   //   Promise.resolve().then(() => {
   //     xcSectionPanels.forEach((p) => {
@@ -228,7 +223,7 @@ export function activate(context: vscode.ExtensionContext) {
         theme === config.currentTheme ? temp.push(select) : themes.push(select);
       });
       vscode.window.showQuickPick(temp.concat(themes)).then((res) => {
-        // config.currentTheme = res?.theme;
+        config.currentTheme = res?.theme;
         updatePannel(xcSectionPanels, config, {
           type: "skin",
           value: res?.theme,
