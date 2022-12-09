@@ -55,7 +55,7 @@ const updateFontSize = (
   const config = getConfiguration(OTHERCONFIG) as Record<string, any>;
   const step = isAdd ? 2 : -2;
   config.fs = isNaN(parseInt(config.fs))
-    ? "13px"
+    ? `${12 + step}px`
     : `${parseInt(config.fs) + step}px`;
   updatePannel(xcSectionPanels, config, { type: "fs", value: config.fs });
   // setConfiguration(OTHERCONFIG, config).then(() => {

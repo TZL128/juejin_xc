@@ -62,5 +62,5 @@ export const getThemeCss = (): string => {
 
 export const getCurrentTheme = () => {
   const option = getConfiguration(OTHERCONFIG) as Record<string, any>;
-  return { fs: option.fs || '13px', theme: option.currentTheme };
+  return { fs: option.fs || '12px', theme: option.currentTheme };
 };
