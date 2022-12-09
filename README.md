@@ -16,13 +16,13 @@ VsCode最低版本  **1.70.0**
 ## 功能特点
 
 ### 换肤
-1. 插件内置了三种主题色  
+1. 插件**内置**了三种主题色  
 
    ![image](https://user-images.githubusercontent.com/52518549/206610118-a04c1536-0133-4996-a3a2-2add8f1051f8.png)  
 
 2. 如何自定义主题色
-  打开**settsing.json**配置文件  
-  `"theme": [{"theme": "HY","name": "护眼","color": "#fff","backgroundColor": "#42b883"}],`  
+  打开**settsing.json**配置文件找到**juejin_xc.options**这个字段，并在这个对象中添加如下格式主题代码。  
+  `"theme": [{"theme": "HY","name": "护眼","color": "#fff","backgroundColor": "#42b883"}]`  
   ![image](https://user-images.githubusercontent.com/52518549/206612919-4d6ffb7e-b42c-45c8-b9fe-b9df03916242.png)  
   
 ### 字体大小设置
