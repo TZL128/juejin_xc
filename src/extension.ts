@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
-import { XCTreeView, XCAllTreeView } from "./treeView";
+import { XCTreeView, ShopTreeView, XCViewItem } from "./treeView";
 import { sectionWebView } from "./webView";
 import { Section, SectionPanel } from "#/global";
-import { iconSvg } from "@/utils";
+import { iconSvg, setContext } from "@/utils";
 import {
   isReady,
   setConfiguration,
@@ -18,16 +18,13 @@ import {
 //   });
 // };
 
-const setContext = (key: string, val: boolean) =>
-  vscode.commands.executeCommand("setContext", key, val);
-
 const track = () => {
   vscode.workspace.onDidChangeConfiguration((e) => {
     if (e.affectsConfiguration("juejin_xc.cookie")) {
       setContext("juejin_xc.ready", isReady());
       setContext("juejin_xc.noList", false);
       vscode.commands.executeCommand("juejin_xc.refresh");
-      vscode.commands.executeCommand("juejin_xc.refresh.all");
+      vscode.commands.executeCommand("juejin_xc.refresh.shop");
     }
   });
 };
@@ -58,21 +55,34 @@ const updateFontSize = (
     ? `${12 + step}px`
     : `${parseInt(config.fs) + step}px`;
   updatePannel(xcSectionPanels, config, { type: "fs", value: config.fs });
-  // setConfiguration(OTHERCONFIG, config).then(() => {
-  //   Promise.resolve().then(() => {
-  //     xcSectionPanels.forEach((p) => {
-  //       p.reRender();
-  //     });
-  //   });
-  // });
 };
 
 export function activate(context: vscode.ExtensionContext) {
   setContext("juejin_xc.ready", isReady());
-  let xcSectionPanels: Array<SectionPanel> = [];
-  const clearAllPannel = () => {
-    xcSectionPanels.forEach((p) => p.dispose());
-    xcSectionPanels = [];
+  let xcSectionPanels: Array<SectionPanel> = [],
+    shopSectionPanels: Array<SectionPanel> = [],
+    cache: Array<XCViewItem | undefined> = [];
+
+  const clearAllPannel = (index: 0 | 1): boolean => {
+    cache[index] = void 0;
+    const panels = index ? shopSectionPanels : xcSectionPanels;
+    const hasCache = !!panels.length;
+    panels.forEach((p) => p.dispose());
+    panels.length = 0;
+    return hasCache;
+  };
+  const refresh = (flag: 0 | 1) => {
+    const hasCache = clearAllPannel(flag);
+    const treeView = flag ? shopXCTreeView : myXCTreeView;
+    [cache[flag]] = treeView.selection;
+    const provider = flag ? shopTreeViewProvider : xcTreeViewProvider;
+    provider.refresh();
+    hasCache &&
+      cache[flag] &&
+      vscode.commands.executeCommand(
+        cache[flag]!.command?.command!,
+        ...cache[flag]!.command?.arguments!
+      );
   };
   //我的小册
   const xcTreeViewProvider = new XCTreeView();
@@ -84,14 +94,14 @@ export function activate(context: vscode.ExtensionContext) {
   );
   context.subscriptions.push(myXCTreeView);
   //全部小册
-  const xcAllTreeViewProvider = new XCAllTreeView();
-  const allXCTreeView = vscode.window.createTreeView(
-    "juejin_xc_activitybar.xc.all",
+  const shopTreeViewProvider = new ShopTreeView();
+  const shopXCTreeView = vscode.window.createTreeView(
+    "juejin_xc_activitybar.xc.shop",
     {
-      treeDataProvider: xcAllTreeViewProvider,
+      treeDataProvider: shopTreeViewProvider,
     }
   );
-  context.subscriptions.push(allXCTreeView);
+  context.subscriptions.push(shopXCTreeView);
   //设置命令
   context.subscriptions.push(
     vscode.commands.registerCommand("juejin_xc.setting", () =>
@@ -115,7 +125,8 @@ export function activate(context: vscode.ExtensionContext) {
         if (section.status === 0) {
           return vscode.window.showInformationMessage("小册还在写作中...");
         }
-        const list = xcSectionPanels.filter(
+        const panels = type ? shopSectionPanels : xcSectionPanels;
+        const list = panels.filter(
           (panel) => panel.viewType === `XC${section.section_id}`
         );
         if (list.length) {
@@ -128,20 +139,37 @@ export function activate(context: vscode.ExtensionContext) {
             { treeItem, enableScripts: true },
             { section_id: section.section_id }
           );
-          xcSectionPanels.push(sectionPanel);
+          panels.push(sectionPanel);
           const icon = vscode.Uri.file(iconSvg("xc"));
           sectionPanel.iconPath = {
             light: icon,
             dark: icon,
           };
           sectionPanel.onDidDispose(() => {
-            xcSectionPanels = xcSectionPanels.filter(
-              (panel) => panel !== sectionPanel
-            );
+            if (type) {
+              shopSectionPanels = shopSectionPanels.filter(
+                (panel) => panel !== sectionPanel
+              );
+            } else {
+              xcSectionPanels = xcSectionPanels.filter(
+                (panel) => panel !== sectionPanel
+              );
+            }
           });
           sectionPanel.onDidChangeViewState(({ webviewPanel }) => {
             if (webviewPanel.active) {
-              let treeView = type ? allXCTreeView : myXCTreeView;
+              const treeView = type ? shopXCTreeView : myXCTreeView;
+              const provider = type ? shopTreeViewProvider : xcTreeViewProvider;
+              if ((webviewPanel.options as any).treeItem === cache[type]) {
+                const { booklet_id, section_id } =
+                  cache[type]?.command?.arguments![1] || {};
+                const item = provider.findSectionViewItem(
+                  booklet_id,
+                  section_id
+                );
+                item && treeView.reveal(item, { select: true });
+                return;
+              }
               treeView.reveal((webviewPanel.options as any).treeItem, {
                 select: true,
               });
@@ -153,17 +181,11 @@ export function activate(context: vscode.ExtensionContext) {
   );
   //刷新数据
   context.subscriptions.push(
-    vscode.commands.registerCommand("juejin_xc.refresh", () => {
-      clearAllPannel();
-      xcTreeViewProvider.refresh();
-    })
+    vscode.commands.registerCommand("juejin_xc.refresh", () => refresh(0))
   );
   //刷新全部小册数据
   context.subscriptions.push(
-    vscode.commands.registerCommand("juejin_xc.refresh.all", () => {
-      clearAllPannel();
-      xcAllTreeViewProvider.refresh();
-    })
+    vscode.commands.registerCommand("juejin_xc.refresh.shop", () => refresh(1))
   );
   //小册置顶
   context.subscriptions.push(
@@ -208,6 +230,8 @@ export function activate(context: vscode.ExtensionContext) {
       setConfiguration(OTHERCONFIG, {
         ...(getConfiguration(OTHERCONFIG) as Object),
         order: [],
+      }).then(() => {
+        vscode.commands.executeCommand("juejin_xc.refresh");
       });
     })
   );
@@ -224,7 +248,7 @@ export function activate(context: vscode.ExtensionContext) {
       });
       vscode.window.showQuickPick(temp.concat(themes)).then((res) => {
         config.currentTheme = res?.theme;
-        updatePannel(xcSectionPanels, config, {
+        updatePannel([...xcSectionPanels, ...shopSectionPanels], config, {
           type: "skin",
           value: res?.theme,
         });
@@ -246,12 +270,12 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand("juejin_xc.fontSize.d", () =>
-      updateFontSize(xcSectionPanels)
+      updateFontSize([...xcSectionPanels, ...shopSectionPanels])
     )
   );
   context.subscriptions.push(
     vscode.commands.registerCommand("juejin_xc.fontSize.x", () =>
-      updateFontSize(xcSectionPanels, false)
+      updateFontSize([...xcSectionPanels, ...shopSectionPanels], false)
     )
   );
   track();

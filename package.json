@@ -2,7 +2,7 @@
   "name": "juejin-xc",
   "displayName": "掘金小册",
   "description": "一款可以在VsCode中阅读掘金小册的插件",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "engines": {
     "vscode": "^1.70.0"
   },
@@ -22,11 +22,11 @@
   ],
   "activationEvents": [
     "onView:juejin_xc_activitybar.xc",
-    "onView:juejin_xc_activitybar.xc.all",
+    "onView:juejin_xc_activitybar.xc.shop",
     "onCommand:juejin_xc.sections",
     "onCommand:juejin_xc.setting",
     "onCommand:juejin_xc.refresh",
-    "onCommand:juejin_xc.refresh.all",
+    "onCommand:juejin_xc.refresh.shop",
     "onCommand:juejin_xc.link",
     "onCommand:juejin_xc.sort",
     "onCommand:juejin_xc.skin",
@@ -46,12 +46,12 @@
       },
       {
         "command": "juejin_xc.refresh",
-        "title": "刷新数据",
+        "title": "刷新我的小册",
         "icon": "./resource/svgs/refresh.svg"
       },
       {
-        "command": "juejin_xc.refresh.all",
-        "title": "刷新全部小册数据",
+        "command": "juejin_xc.refresh.shop",
+        "title": "刷新小册商店",
         "icon": "./resource/svgs/refresh.svg"
       },
       {
@@ -105,8 +105,8 @@
           "group": "navigation"
         },
         {
-          "command": "juejin_xc.refresh",
-          "when": "view==juejin_xc_activitybar.xc.all",
+          "command": "juejin_xc.refresh.shop",
+          "when": "view==juejin_xc_activitybar.xc.shop",
           "group": "navigation"
         }
       ],
@@ -137,8 +137,8 @@
           "name": "我的小册"
         },
         {
-          "id": "juejin_xc_activitybar.xc.all",
-          "name": "全部小册"
+          "id": "juejin_xc_activitybar.xc.shop",
+          "name": "小册商店"
         }
       ]
     },
@@ -174,7 +174,7 @@
         "when": "juejin_xc.ready&&juejin_xc.noList"
       },
       {
-        "view": "juejin_xc_activitybar.xc.all",
+        "view": "juejin_xc_activitybar.xc.shop",
         "contents": "正在努力加载..."
       }
     ],
