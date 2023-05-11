@@ -7,7 +7,7 @@ interface CacheType {
   [key: string]: XCViewItem[];
 }
 
-export class XCViewItem extends vscode.TreeItem {}
+export class XCViewItem extends vscode.TreeItem { }
 
 abstract class TreeView implements vscode.TreeDataProvider<XCViewItem> {
   private cacheObj: CacheType = {};
@@ -64,9 +64,8 @@ export class XCTreeView extends TreeView {
             light: iconSvg("xc"),
             dark: iconSvg("xc"),
           };
-          const order =
-            (getConfiguration(OTHERCONFIG) as Record<string, any>).order || [];
-          const index = order.indexOf(xc.booklet_id);
+          const order = (getConfiguration(OTHERCONFIG) as Record<string, any>).order;
+          const index = (Array.isArray(order) ? order : []).indexOf(xc.booklet_id);
           index !== -1 ? has.splice(index, 0, item) : no.push(item);
         }
       });
@@ -147,11 +146,9 @@ export class ShopTreeView extends TreeView {
             vscode.TreeItemCollapsibleState.Collapsed
           );
           item.contextValue = `XC_${xc.booklet_id}_${xc.is_buy}_${xc.course_type}`;
-          item.tooltip = `作者：${xc.user_name}\n是否购买：${
-            xc.is_buy ? "是" : "否"
-          }\n是否上新：${xc.is_new ? "是" : "否"}\n总章节数：${
-            xc.section_count
-          }\n已更新章节数：${xc.section_updated_count}\n描述：${xc.summary}`;
+          item.tooltip = `作者：${xc.user_name}\n是否购买：${xc.is_buy ? "是" : "否"
+            }\n是否上新：${xc.is_new ? "是" : "否"}\n总章节数：${xc.section_count
+            }\n已更新章节数：${xc.section_updated_count}\n描述：${xc.summary}`;
           const icon = iconSvg(xc.is_new ? "new" : xc.is_buy ? "has" : "xc");
           item.iconPath = {
             light: icon,
@@ -177,9 +174,8 @@ export class ShopTreeView extends TreeView {
           command: "juejin_xc.sections",
           arguments: [is_buy, section, item, 1],
         };
-        item.tooltip = `能否试学：${
-          section.is_free ? "能" : "否"
-        }\n是否创作完毕：${section.status ? "是" : "否"}`;
+        item.tooltip = `能否试学：${section.is_free ? "能" : "否"
+          }\n是否创作完毕：${section.status ? "是" : "否"}`;
 
         if (
           (!is_buy && section.is_free === 0) ||
@@ -215,8 +211,8 @@ export class ShopTreeView extends TreeView {
       return type === "category"
         ? this.renderXCList(id)
         : type === "XC"
-        ? this.renderSection(id, buy === "true")
-        : [];
+          ? this.renderSection(id, buy === "true")
+          : [];
     } else {
       return this.renderCategory();
     }

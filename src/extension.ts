@@ -195,17 +195,13 @@ export function activate(context: vscode.ExtensionContext) {
       }
       const [, id] = arg.contextValue.split("_");
       const config = getConfiguration(OTHERCONFIG) as Record<string, any>;
-      if (!config.order) {
+      if (!config.order || !Array.isArray(config.order)) {
         config.order = [];
       }
       if (id === config.order[0]) {
         return;
       }
-      const index = config.order.indexOf(id);
-      if (index !== -1) {
-        config.order.splice(index, 1);
-      }
-      config.order.unshift(id);
+      config.order = [...new Set([id, ...config.order])];
       setConfiguration(OTHERCONFIG, config).then(() =>
         vscode.commands.executeCommand("juejin_xc.refresh")
       );
@@ -281,4 +277,4 @@ export function activate(context: vscode.ExtensionContext) {
   track();
 }
 
-export function deactivate() {}
+export function deactivate() { }
