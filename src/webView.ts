@@ -33,17 +33,45 @@ const sectionHtml = (data: SectionParams): Promise<string> => {
         ${await xcContent(data)}
       </div>
       <script>
-        (function(){
-          const el= document.querySelector('#container');
-          window.addEventListener('message', event => {
-            const data=event.data;
-            if(data.type==='skin'){
-              document.body.className=data.value
-            }else if(data.type==='fs'){
+        (function () {
+          const vscode = acquireVsCodeApi();
+          function debounce(fn, wait = 50, immediate) {
+            let timer = null;
+            return function (...args) {
+              if (timer) clearTimeout(timer);
+              if (immediate && !timer) {
+                fn.apply(this, args);
+              }
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+              }, wait);
+            };
+          }
+          const el = document.querySelector("#container");
+          window.document.addEventListener(
+            "scroll",
+            debounce(
+              function (event) {
+                const { scrollHeight, scrollTop, clientHeight } = event.target.scrollingElement
+                if (scrollTop + clientHeight + 50 >= scrollHeight) {
+                  vscode.postMessage({
+                    type:'over',
+                    id:'${ data.section_id }'
+                  })
+                }
+              },
+              200
+            )
+          );
+          window.addEventListener("message", (event) => {
+            const data = event.data;
+            if (data.type === "skin") {
+              document.body.className = data.value;
+            } else if (data.type === "fs") {
               el.style.setProperty("--fs", data.value);
-            }          
-          })
-        })()
+            }
+          });
+        })();
       </script>
     </body>
     </html>

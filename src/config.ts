@@ -9,7 +9,12 @@ export const getCooKie = (): string =>
 export const isReady = () => !!getCooKie();
 
 export const setConfiguration = (key: string, value: any) =>
-  vscode.workspace.getConfiguration().update(key, value, true);
+  vscode.workspace.getConfiguration().update(key, value, vscode.ConfigurationTarget.Global);
+
+//getConfiguration(xxx)  xxx 指 configuration中的title 
+export const setField = (key: string, value: any) => vscode.workspace.getConfiguration('juejin_xc').update(key, value, vscode.ConfigurationTarget.Global);
+
+export const getField = (key: string) => vscode.workspace.getConfiguration('juejin_xc').get(key);
 
 export const getConfiguration = (key: string) =>
   vscode.workspace.getConfiguration().get(key);
@@ -42,12 +47,12 @@ export const getThemList = (): Array<Theme> => {
   const theme: Array<Theme> =
     options.theme && Array.isArray(options.theme)
       ? [...getBaseTheme(), ...options.theme]
-      : getBaseTheme();      
+      : getBaseTheme();
   return theme;
 };
 
 export const getThemeCss = (): string => {
-  const theme= getThemList();
+  const theme = getThemList();
   let themeCss = ``;
   theme.forEach((item) => {
     themeCss += `

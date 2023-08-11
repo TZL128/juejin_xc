@@ -9,6 +9,8 @@ import {
   getConfiguration,
   getThemList,
   OTHERCONFIG,
+  setField,
+  getField,
 } from "@/config";
 
 // const trigger = () => {
@@ -130,13 +132,14 @@ export function activate(context: vscode.ExtensionContext) {
           (panel) => panel.viewType === `XC${section.section_id}`
         );
         if (list.length) {
-          list[0].reveal(vscode.ViewColumn.One);
+          const [p] = list;
+          p.reveal(vscode.ViewColumn.One);
         } else {
           const sectionPanel = sectionWebView(
             `XC${section.section_id}`,
             section.title,
             vscode.ViewColumn.One,
-            { treeItem, enableScripts: true },
+            { treeItem, enableScripts: true, retainContextWhenHidden: true },
             { section_id: section.section_id }
           );
           panels.push(sectionPanel);
@@ -174,6 +177,17 @@ export function activate(context: vscode.ExtensionContext) {
                 select: true,
               });
             }
+          });
+          sectionPanel.webview.onDidReceiveMessage((msg) => {
+            const options = getField("options") as Record<string, any>;
+            const overList = options.overList
+              ? Array.isArray(options.overList)
+                ? options.overList
+                : []
+              : [];
+            if (overList.includes(msg.id)) { return; }
+            options.overList = [...overList, msg.id];
+            setField("options", options);
           });
         }
       }
@@ -243,23 +257,14 @@ export function activate(context: vscode.ExtensionContext) {
         theme === config.currentTheme ? temp.push(select) : themes.push(select);
       });
       vscode.window.showQuickPick(temp.concat(themes)).then((res) => {
+        if (!res) {
+          return;
+        }
         config.currentTheme = res?.theme;
         updatePannel([...xcSectionPanels, ...shopSectionPanels], config, {
           type: "skin",
           value: res?.theme,
         });
-        // setConfiguration(OTHERCONFIG, config).then(() => {
-        //   //不是最新？？？ 加个任务队列
-        //   Promise.resolve().then(() => {
-        //     xcSectionPanels.forEach((p) => {
-        //       p.webview.postMessage({
-        //         type: "skin",
-        //         value: res?.theme,
-        //       });
-        //       p.reRender();
-        //     });
-        //   });
-        // });
       });
     })
   );

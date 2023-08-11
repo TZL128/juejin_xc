@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { xcList, xcSections, xcCategory, xcCategoryList } from "@/api/request";
-import { isReady, getConfiguration, OTHERCONFIG } from "@/config";
+import { isReady, getConfiguration, OTHERCONFIG, getField } from "@/config";
 import { iconSvg, setContext } from "@/utils";
 
 interface CacheType {
@@ -79,6 +79,15 @@ export class XCTreeView extends TreeView {
       const sectionList = list.map((section, index) => {
         const order = index + 1 < 10 ? `${index + 1}  ` : `${index + 1}`;
         const item = new XCViewItem(`${order} ${section.title}`);
+        let description = '';
+        const options = getField('options') as Record<string, any>;
+        if (section.progress === 100 || (options.overList && options.overList.includes(section.section_id))) {
+          description += '已学完';
+        }
+        if (section.has_update === 2) {
+          description += ' 有更新';
+        }
+        item.description = description;
         item.command = {
           title: "章节内容",
           command: "juejin_xc.sections",

@@ -19,7 +19,8 @@ export type Section = {
   section_id: string;
   title: string;
   status: number;
-  is_update: number;
+  has_update: any;
+  progress:any;
   is_free: number;
   markdown_show: string;
 };

@@ -60,7 +60,7 @@ export const xcSections = (data: {
     }
     resolve(
       res.data?.sections.map((item: any) => {
-        const { booklet_id, section_id, title, status, is_free, is_update } =
+        const { booklet_id, section_id, title, status, is_free,reading_progress } =
           item;
         return {
           booklet_id,
@@ -68,7 +68,8 @@ export const xcSections = (data: {
           title,
           status,
           is_free,
-          is_update,
+          has_update:reading_progress?.has_update,
+          progress:reading_progress?.reading_progress,
           markdown_show: res.data?.introduction.markdown_show,
         };
       })
