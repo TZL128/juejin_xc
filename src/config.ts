@@ -1,23 +1,15 @@
 import * as vscode from "vscode";
 import type { Theme } from "#/global";
 
-export const OTHERCONFIG = "juejin_xc.options";
-
 export const getCooKie = (): string =>
   vscode.workspace.getConfiguration().get("juejin_xc.cookie") + "";
 
 export const isReady = () => !!getCooKie();
 
-export const setConfiguration = (key: string, value: any) =>
-  vscode.workspace.getConfiguration().update(key, value, vscode.ConfigurationTarget.Global);
-
 //getConfiguration(xxx)  xxx 指 configuration中的title 
 export const setField = (key: string, value: any) => vscode.workspace.getConfiguration('juejin_xc').update(key, value, vscode.ConfigurationTarget.Global);
 
 export const getField = (key: string) => vscode.workspace.getConfiguration('juejin_xc').get(key);
-
-export const getConfiguration = (key: string) =>
-  vscode.workspace.getConfiguration().get(key);
 
 export const getBaseTheme = (): Array<Theme> => {
   return [
@@ -43,7 +35,7 @@ export const getBaseTheme = (): Array<Theme> => {
 };
 
 export const getThemList = (): Array<Theme> => {
-  const options = getConfiguration(OTHERCONFIG) as Record<string, any>;
+  const options = getField('options') as Record<string, any>;
   const theme: Array<Theme> =
     options.theme && Array.isArray(options.theme)
       ? [...getBaseTheme(), ...options.theme]
@@ -66,6 +58,6 @@ export const getThemeCss = (): string => {
 };
 
 export const getCurrentTheme = () => {
-  const option = getConfiguration(OTHERCONFIG) as Record<string, any>;
+  const option = getField('options') as Record<string, any>;
   return { fs: option.fs || '12px', theme: option.currentTheme };
 };

@@ -5,20 +5,10 @@ import { Section, SectionPanel } from "#/global";
 import { iconSvg, setContext } from "@/utils";
 import {
   isReady,
-  setConfiguration,
-  getConfiguration,
   getThemList,
-  OTHERCONFIG,
   setField,
   getField,
 } from "@/config";
-
-// const trigger = () => {
-//   setConfiguration(OTHERCONFIG, {
-//     ...(getConfiguration(OTHERCONFIG) as Object),
-//     activateTime: Date.now(),
-//   });
-// };
 
 const track = () => {
   vscode.workspace.onDidChangeConfiguration((e) => {
@@ -27,6 +17,8 @@ const track = () => {
       setContext("juejin_xc.noList", false);
       vscode.commands.executeCommand("juejin_xc.refresh");
       vscode.commands.executeCommand("juejin_xc.refresh.shop");
+    } else if (e.affectsConfiguration("juejin_xc.showDesc")) {
+      isReady() && vscode.commands.executeCommand("juejin_xc.refresh");
     }
   });
 };
@@ -37,7 +29,7 @@ const updatePannel = (
   data: { type: "skin" | "fs"; value?: string },
   isAnimation: boolean = true
 ) => {
-  setConfiguration(OTHERCONFIG, config).then(() => {
+  setField('options', config).then(() => {
     Promise.resolve().then(() => {
       xcSectionPanels.forEach((p) => {
         isAnimation && p.webview.postMessage(data);
@@ -45,18 +37,19 @@ const updatePannel = (
       });
     });
   });
+
 };
 
 const updateFontSize = (
   xcSectionPanels: Array<SectionPanel>,
   isAdd: boolean = true
 ) => {
-  const config = getConfiguration(OTHERCONFIG) as Record<string, any>;
+  const options = getField('options') as Record<string, any>;
   const step = isAdd ? 2 : -2;
-  config.fs = isNaN(parseInt(config.fs))
+  options.fs = isNaN(parseInt(options.fs))
     ? `${12 + step}px`
-    : `${parseInt(config.fs) + step}px`;
-  updatePannel(xcSectionPanels, config, { type: "fs", value: config.fs });
+    : `${parseInt(options.fs) + step}px`;
+  updatePannel(xcSectionPanels, options, { type: "fs", value: options.fs });
 };
 
 export function activate(context: vscode.ExtensionContext) {
@@ -178,7 +171,8 @@ export function activate(context: vscode.ExtensionContext) {
               });
             }
           });
-          sectionPanel.webview.onDidReceiveMessage((msg) => {
+          //我的小册列表才监听
+          xcSectionPanels.includes(sectionPanel) && sectionPanel.webview.onDidReceiveMessage((msg) => {
             const options = getField("options") as Record<string, any>;
             const overList = options.overList
               ? Array.isArray(options.overList)
@@ -208,17 +202,17 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
       const [, id] = arg.contextValue.split("_");
-      const config = getConfiguration(OTHERCONFIG) as Record<string, any>;
-      if (!config.order || !Array.isArray(config.order)) {
-        config.order = [];
+      const options = getField('options') as Record<string, any>;
+      if (!options.order || !Array.isArray(options.order)) {
+        options.order = [];
       }
-      if (id === config.order[0]) {
+      if (id === options.order[0]) {
         return;
       }
-      config.order = [...new Set([id, ...config.order])];
-      setConfiguration(OTHERCONFIG, config).then(() =>
-        vscode.commands.executeCommand("juejin_xc.refresh")
-      );
+      options.order = [...new Set([id, ...options.order])];
+      setField('options', options).then(() => {
+        vscode.commands.executeCommand("juejin_xc.refresh");
+      });
     })
   );
   //小册链接
@@ -237,33 +231,32 @@ export function activate(context: vscode.ExtensionContext) {
   );
   context.subscriptions.push(
     vscode.commands.registerCommand("juejin_xc.sort", () => {
-      setConfiguration(OTHERCONFIG, {
-        ...(getConfiguration(OTHERCONFIG) as Object),
-        order: [],
-      }).then(() => {
+      const options = getField('options') as Record<string, any>;
+      options.order = [];
+      setField('options', options).then(() => {
         vscode.commands.executeCommand("juejin_xc.refresh");
       });
     })
   );
   context.subscriptions.push(
     vscode.commands.registerCommand("juejin_xc.skin", () => {
-      const config = getConfiguration(OTHERCONFIG) as Record<string, any>;
+      const options = getField('options') as Record<string, any>;
       type SelectType = { label: string; theme: string };
       const themes: Array<SelectType> = [],
         temp: Array<SelectType> = [];
 
       getThemList().forEach(({ name, theme }) => {
         const select = { label: name ? name : theme, theme };
-        theme === config.currentTheme ? temp.push(select) : themes.push(select);
+        theme === options.currentTheme ? temp.push(select) : themes.push(select);
       });
       vscode.window.showQuickPick(temp.concat(themes)).then((res) => {
         if (!res) {
           return;
         }
-        config.currentTheme = res?.theme;
-        updatePannel([...xcSectionPanels, ...shopSectionPanels], config, {
+        options.currentTheme = res.theme;
+        updatePannel([...xcSectionPanels, ...shopSectionPanels], options, {
           type: "skin",
-          value: res?.theme,
+          value: res.theme,
         });
       });
     })

@@ -153,6 +153,11 @@
           "juejin_xc.options": {
             "type": "object",
             "description": "其他配置信息"
+          },
+          "juejin_xc.showDesc": {
+            "type": "boolean",
+            "default": true,
+            "description": "是否显示小册章节描述信息"
           }
         }
       }
