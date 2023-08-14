@@ -9,7 +9,8 @@ VsCode最低版本  **1.70.0**
 ### 设置账号信息  
 
 安装后点击去设置cookie即可
-![image](https://user-images.githubusercontent.com/52518549/203453464-a04396af-6ef0-4304-a56c-6895a28c0312.png)
+![image](https://github.com/TZL128/juejin_xc/assets/52518549/1d4feac9-c399-4194-bfa0-50769538731c)
+
 ### 如何获取cookie?
 打开掘金官网，按 f12 进入开发者模式。 检查网络请求，找到cookie复制粘贴即可。
 
