@@ -2,7 +2,7 @@
   "name": "juejin-xc",
   "displayName": "掘金小册",
   "description": "一款可以在VsCode中阅读掘金小册的插件",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "engines": {
     "vscode": "^1.70.0"
   },
