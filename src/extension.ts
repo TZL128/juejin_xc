@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { XCTreeView, ShopTreeView, XCViewItem } from "./treeView";
-import { sectionWebView } from "./webView";
+import { sectionWebView, CommentWebView } from "./webView";
 import { Section, SectionPanel } from "#/global";
 import { iconSvg, setContext } from "@/utils";
 import {
@@ -97,6 +97,10 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
   context.subscriptions.push(shopXCTreeView);
+  //章节评论
+  const commentWebViewProvider = new CommentWebView();
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider('juejin_xc_activitybar.xc.comment', commentWebViewProvider));
   //设置命令
   context.subscriptions.push(
     vscode.commands.registerCommand("juejin_xc.setting", () =>
@@ -144,16 +148,20 @@ export function activate(context: vscode.ExtensionContext) {
           sectionPanel.onDidDispose(() => {
             if (type) {
               shopSectionPanels = shopSectionPanels.filter(
-                (panel) => panel !== sectionPanel
+                (panel) =>
+                  panel !== sectionPanel
               );
             } else {
               xcSectionPanels = xcSectionPanels.filter(
-                (panel) => panel !== sectionPanel
+                (panel) =>
+                  panel !== sectionPanel
               );
             }
+            commentWebViewProvider.initHtml(true);//同步
           });
           sectionPanel.onDidChangeViewState(({ webviewPanel }) => {
             if (webviewPanel.active) {
+              commentWebViewProvider.changeHtml(webviewPanel.viewType.slice(2));//异步
               const treeView = type ? shopXCTreeView : myXCTreeView;
               const provider = type ? shopTreeViewProvider : xcTreeViewProvider;
               if ((webviewPanel.options as any).treeItem === cache[type]) {
@@ -184,6 +192,8 @@ export function activate(context: vscode.ExtensionContext) {
             setField("options", options);
           });
         }
+        //章节评论
+        commentWebViewProvider.changeHtml(section.section_id);
       }
     )
   );

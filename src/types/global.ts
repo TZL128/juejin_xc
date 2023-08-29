@@ -25,6 +25,17 @@ export type Section = {
   markdown_show: string;
 };
 
+//评论
+export type Comment={
+  comment_id:string
+  is_author:boolean
+  comment_info:any
+  reply_infos:any
+  root_item:any
+  user_info:any
+  user_interact:any
+};
+
 //章节内容请求参数
 export type SectionParams = {
   section_id: string;

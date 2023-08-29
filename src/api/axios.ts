@@ -35,6 +35,8 @@ interface MyResponseType {
   code: number;
   message: string;
   data: any;
+  has_more?:boolean;
+  count?:number
 }
 
 export const request = async (
@@ -49,11 +51,14 @@ export const request = async (
       status: 500,
       statusText: e.message,
       data: null,
+
     };
   });
   return {
     code,
     message,
     data: data?.data,
+    has_more:data?.has_more,
+    count:data?.count
   };
 };
