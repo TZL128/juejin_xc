@@ -170,6 +170,7 @@ export class CommentWebView implements vscode.WebviewViewProvider {
           ${item.reply_info.reply_pics.map(
           (img: any) => `<img
             src=${img.pic_url}
+            onclick=preViewImg('${img.pic_url}',${img.width},${img.height})
           />`
         )}
         </div>
@@ -332,8 +333,7 @@ export class CommentWebView implements vscode.WebviewViewProvider {
                 )
                 .join("")}
                 </div>
-                <div class="commentText">${item.comment_info.comment_content
-              }</div>
+                <div class="commentText">${item.comment_info.comment_content}</div>
                 ${item.reply_infos.length
                 ? `
                 <div class="reply" id=${item.comment_info.item_id}_${item.comment_info.comment_id
@@ -349,7 +349,7 @@ export class CommentWebView implements vscode.WebviewViewProvider {
               </div>
             </div>`
           )
-          .join("")}
+          .join(" ")}
           </div>
           <script>
             const vscode = acquireVsCodeApi();
