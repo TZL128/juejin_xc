@@ -9,7 +9,8 @@ VsCode最低版本  **1.70.0**
 ### 设置账号信息  
 
 安装后点击去设置cookie即可
-![image](https://github.com/TZL128/juejin_xc/assets/52518549/1d4feac9-c399-4194-bfa0-50769538731c)
+![image](https://github.com/TZL128/juejin_xc/assets/52518549/ab3654ac-764c-4a84-898b-a9e61740a9e5)
+
 
 ### 如何获取cookie?
 打开掘金官网，按 f12 进入开发者模式。 检查网络请求，找到cookie复制粘贴即可。
@@ -31,3 +32,16 @@ win:**ctrl**
 mac: **cmd**
 1. 快捷键 **ctrl+d** 变大
 2. 快捷键 **ctrl+x** 变小
+
+### 可以多章节同时阅读以及评论
+借助VsCode编辑器可以做到这一点  
+
+![image](https://github.com/TZL128/juejin_xc/assets/52518549/4d4856c5-5827-466a-81e2-84ddaa80d0b9)
+
+
+章节评论  
+
+![image](https://github.com/TZL128/juejin_xc/assets/52518549/83d0d8a8-0a9d-4b21-bfcb-03a9bf4822bd)  
+
+  
+
