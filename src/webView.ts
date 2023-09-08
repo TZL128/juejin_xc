@@ -313,7 +313,7 @@ export class CommentWebView implements vscode.WebviewViewProvider {
         </head>
         <body>
           <div class="container">
-          ${total ? `<div class="replyNumber">全部评论（${total}）</div>` : ``}
+          <div class="replyNumber">${total ? `全部评论（${total}）` : '还没人评论哦~~'} </div>
           ${list
           .map(
             (item) => `<div class="comment-item">
