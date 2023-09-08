@@ -36,12 +36,14 @@ mac: **cmd**
 ### 可以多章节同时阅读以及评论
 借助VsCode编辑器可以做到这一点  
 
-![image](https://github.com/TZL128/juejin_xc/assets/52518549/4d4856c5-5827-466a-81e2-84ddaa80d0b9)
+![image](https://github.com/TZL128/juejin_xc/assets/52518549/aa8fbde6-22a8-4ebf-9eac-b5140ed6f29b)
+
 
 
 章节评论  
 
-![image](https://github.com/TZL128/juejin_xc/assets/52518549/83d0d8a8-0a9d-4b21-bfcb-03a9bf4822bd)  
+![image](https://github.com/TZL128/juejin_xc/assets/52518549/e774280e-31c5-44b4-aff7-2a0be99fafd3)
+
 
   
 
