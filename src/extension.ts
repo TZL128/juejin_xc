@@ -3,12 +3,7 @@ import { XCTreeView, ShopTreeView, XCViewItem } from "./treeView";
 import { sectionWebView, CommentWebView } from "./webView";
 import { Section, SectionPanel } from "#/global";
 import { iconSvg, setContext } from "@/utils";
-import {
-  isReady,
-  getThemList,
-  setField,
-  getField,
-} from "@/config";
+import { isReady, getThemList, setField, getField } from "@/config";
 
 const track = () => {
   vscode.workspace.onDidChangeConfiguration((e) => {
@@ -29,7 +24,7 @@ const updatePannel = (
   data: { type: "skin" | "fs"; value?: string },
   isAnimation: boolean = true
 ) => {
-  setField('options', config).then(() => {
+  setField("options", config).then(() => {
     Promise.resolve().then(() => {
       xcSectionPanels.forEach((p) => {
         isAnimation && p.webview.postMessage(data);
@@ -37,14 +32,13 @@ const updatePannel = (
       });
     });
   });
-
 };
 
 const updateFontSize = (
   xcSectionPanels: Array<SectionPanel>,
   isAdd: boolean = true
 ) => {
-  const options = getField('options') as Record<string, any>;
+  const options = getField("options") as Record<string, any>;
   const step = isAdd ? 2 : -2;
   options.fs = isNaN(parseInt(options.fs))
     ? `${12 + step}px`
@@ -100,7 +94,11 @@ export function activate(context: vscode.ExtensionContext) {
   //章节评论
   const commentWebViewProvider = new CommentWebView();
   context.subscriptions.push(
-    vscode.window.registerWebviewViewProvider('juejin_xc_activitybar.xc.comment', commentWebViewProvider));
+    vscode.window.registerWebviewViewProvider(
+      "juejin_xc_activitybar.xc.comment",
+      commentWebViewProvider
+    )
+  );
   //设置命令
   context.subscriptions.push(
     vscode.commands.registerCommand("juejin_xc.setting", () =>
@@ -148,20 +146,20 @@ export function activate(context: vscode.ExtensionContext) {
           sectionPanel.onDidDispose(() => {
             if (type) {
               shopSectionPanels = shopSectionPanels.filter(
-                (panel) =>
-                  panel !== sectionPanel
+                (panel) => panel !== sectionPanel
               );
             } else {
               xcSectionPanels = xcSectionPanels.filter(
-                (panel) =>
-                  panel !== sectionPanel
+                (panel) => panel !== sectionPanel
               );
             }
-            commentWebViewProvider.initHtml(true);//同步
+            if (!(xcSectionPanels.length + shopSectionPanels.length)) {
+              commentWebViewProvider.initHtml(true);
+            }
           });
           sectionPanel.onDidChangeViewState(({ webviewPanel }) => {
             if (webviewPanel.active) {
-              commentWebViewProvider.changeHtml(webviewPanel.viewType.slice(2));//异步
+              commentWebViewProvider.changeHtml(webviewPanel.viewType.slice(2)); //异步
               const treeView = type ? shopXCTreeView : myXCTreeView;
               const provider = type ? shopTreeViewProvider : xcTreeViewProvider;
               if ((webviewPanel.options as any).treeItem === cache[type]) {
@@ -178,19 +176,23 @@ export function activate(context: vscode.ExtensionContext) {
                 select: true,
               });
             }
+            !webviewPanel.visible && commentWebViewProvider.initHtml(true);
           });
           //我的小册列表才监听
-          xcSectionPanels.includes(sectionPanel) && sectionPanel.webview.onDidReceiveMessage((msg) => {
-            const options = getField("options") as Record<string, any>;
-            const overList = options.overList
-              ? Array.isArray(options.overList)
-                ? options.overList
-                : []
-              : [];
-            if (overList.includes(msg.id)) { return; }
-            options.overList = [...overList, msg.id];
-            setField("options", options);
-          });
+          xcSectionPanels.includes(sectionPanel) &&
+            sectionPanel.webview.onDidReceiveMessage((msg) => {
+              const options = getField("options") as Record<string, any>;
+              const overList = options.overList
+                ? Array.isArray(options.overList)
+                  ? options.overList
+                  : []
+                : [];
+              if (overList.includes(msg.id)) {
+                return;
+              }
+              options.overList = [...overList, msg.id];
+              setField("options", options);
+            });
         }
         //章节评论
         commentWebViewProvider.changeHtml(section.section_id);
@@ -212,7 +214,7 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
       const [, id] = arg.contextValue.split("_");
-      const options = getField('options') as Record<string, any>;
+      const options = getField("options") as Record<string, any>;
       if (!options.order || !Array.isArray(options.order)) {
         options.order = [];
       }
@@ -220,7 +222,7 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
       options.order = [...new Set([id, ...options.order])];
-      setField('options', options).then(() => {
+      setField("options", options).then(() => {
         vscode.commands.executeCommand("juejin_xc.refresh");
       });
     })
@@ -241,23 +243,25 @@ export function activate(context: vscode.ExtensionContext) {
   );
   context.subscriptions.push(
     vscode.commands.registerCommand("juejin_xc.sort", () => {
-      const options = getField('options') as Record<string, any>;
+      const options = getField("options") as Record<string, any>;
       options.order = [];
-      setField('options', options).then(() => {
+      setField("options", options).then(() => {
         vscode.commands.executeCommand("juejin_xc.refresh");
       });
     })
   );
   context.subscriptions.push(
     vscode.commands.registerCommand("juejin_xc.skin", () => {
-      const options = getField('options') as Record<string, any>;
+      const options = getField("options") as Record<string, any>;
       type SelectType = { label: string; theme: string };
       const themes: Array<SelectType> = [],
         temp: Array<SelectType> = [];
 
       getThemList().forEach(({ name, theme }) => {
         const select = { label: name ? name : theme, theme };
-        theme === options.currentTheme ? temp.push(select) : themes.push(select);
+        theme === options.currentTheme
+          ? temp.push(select)
+          : themes.push(select);
       });
       vscode.window.showQuickPick(temp.concat(themes)).then((res) => {
         if (!res) {
