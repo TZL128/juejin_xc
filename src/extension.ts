@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as path from "path";
 import { XCTreeView, ShopTreeView, XCViewItem } from "./treeView";
 import { sectionWebView, CommentWebView } from "./webView";
 import { Section, SectionPanel } from "#/global";
@@ -136,7 +137,11 @@ export function activate(context: vscode.ExtensionContext) {
             `XC${section.section_id}`,
             section.title,
             vscode.ViewColumn.One,
-            { treeItem, enableScripts: true, retainContextWhenHidden: true },
+            {
+              treeItem, enableScripts: true,
+              retainContextWhenHidden: true,
+              extensionPath: context.extensionUri
+            },
             { section_id: section.section_id }
           );
           panels.push(sectionPanel);
@@ -179,6 +184,7 @@ export function activate(context: vscode.ExtensionContext) {
               });
             }
           });
+
           //我的小册列表才监听
           xcSectionPanels.includes(sectionPanel) && sectionPanel.webview.onDidReceiveMessage((msg) => {
             const options = getField("options") as Record<string, any>;
@@ -271,7 +277,15 @@ export function activate(context: vscode.ExtensionContext) {
       });
     })
   );
-
+  context.subscriptions.push(
+    vscode.commands.registerCommand('juejin_xc.sectionDownload', () => {
+      [...xcSectionPanels, ...shopSectionPanels].forEach(panel => {
+        if (panel.active) {
+          panel.webview.postMessage({ type: 'download', value: `${panel.title}.pdf` });
+        }
+      });
+    })
+  );
   context.subscriptions.push(
     vscode.commands.registerCommand("juejin_xc.fontSize.d", () =>
       updateFontSize([...xcSectionPanels, ...shopSectionPanels])

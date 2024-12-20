@@ -20,19 +20,7 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onView:juejin_xc_activitybar.xc",
-    "onView:juejin_xc_activitybar.xc.shop",
-    "onCommand:juejin_xc.sections",
-    "onCommand:juejin_xc.setting",
-    "onCommand:juejin_xc.refresh",
-    "onCommand:juejin_xc.refresh.shop",
-    "onCommand:juejin_xc.link",
-    "onCommand:juejin_xc.sort",
-    "onCommand:juejin_xc.skin",
-    "onCommand:juejin_xc.fontSize.d",
-    "onCommand:juejin_xc.fontSize.x"
-  ],
+  "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
@@ -73,6 +61,11 @@
         "command": "juejin_xc.skin",
         "title": "换肤",
         "icon": "./resource/svgs/skin.svg"
+      },
+      {
+        "command": "juejin_xc.sectionDownload",
+        "title": "章节下载",
+        "icon": "./resource/svgs/download.svg"
       },
       {
         "command": "juejin_xc.fontSize.d",
@@ -125,6 +118,11 @@
       "editor/title": [
         {
           "command": "juejin_xc.skin",
+          "group": "navigation",
+          "when": "activeViewlet == 'workbench.view.extension.juejin_xc_activitybar' && activeWebviewPanelId=~/^XC\\d+/"
+        },
+        {
+          "command": "juejin_xc.sectionDownload",
           "group": "navigation",
           "when": "activeViewlet == 'workbench.view.extension.juejin_xc_activitybar' && activeWebviewPanelId=~/^XC\\d+/"
         }
@@ -215,22 +213,24 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.70.0",
     "@types/glob": "^8.0.0",
     "@types/mocha": "^10.0.0",
     "@types/node": "16.x",
+    "@types/vscode": "^1.70.0",
     "@typescript-eslint/eslint-plugin": "^5.38.1",
     "@typescript-eslint/parser": "^5.38.1",
+    "@vscode/test-electron": "^2.1.5",
     "eslint": "^8.24.0",
     "glob": "^8.0.3",
     "mocha": "^10.0.0",
-    "typescript": "^4.8.4",
     "ts-loader": "^9.4.1",
+    "typescript": "^4.8.4",
     "webpack": "^5.74.0",
-    "webpack-cli": "^4.10.0",
-    "@vscode/test-electron": "^2.1.5"
+    "webpack-cli": "^4.10.0"
   },
   "dependencies": {
-    "axios": "^0.27.2"
+    "axios": "^0.27.2",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.2"
   }
 }
