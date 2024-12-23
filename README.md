@@ -45,5 +45,9 @@ mac: **cmd**
 ![image](https://github.com/TZL128/juejin_xc/assets/52518549/e774280e-31c5-44b4-aff7-2a0be99fafd3)
 
 
+### 声明
+本插件仅供学习交流使用，请勿用于商业用途。
+
+
   
 

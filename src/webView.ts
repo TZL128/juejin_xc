@@ -437,7 +437,8 @@ const sectionHtml = async (data: SectionParams, url: any): Promise<string> => {
                     useCORS: true,// 允许跨域
                     onclone:function(cloneDoc){
                       cloneDoc.querySelector('#container').style.color="#252933"
-                    }
+                    },
+                    scale: 2 
                 }).then(canvas => {
                     // 这是实际dom转canvas的画布尺寸
                     let contentWidth = canvas.width;
@@ -459,6 +460,7 @@ const sectionHtml = async (data: SectionParams, url: any): Promise<string> => {
             const a4H = 841.89
             const pdf = new jsPDF('p', 'pt', [a4W, a4H]);
             const batchNum= 20
+            const lineGap=10
             let renderH = 0, positions = 0
             for (let i = 0; i < doms.length; i+=batchNum) {
               const domsBatch = doms.slice(i, i + batchNum)
@@ -473,12 +475,12 @@ const sectionHtml = async (data: SectionParams, url: any): Promise<string> => {
                         pdf.addPage()
                         positions = 0
                         pdf.addImage(imageData, 'PNG', xGap / 2, positions + topGap, realWidth, realHeight);
-                        renderH = realHeight
-                        positions = realHeight
+                        renderH = realHeight+lineGap
+                        positions = realHeight+lineGap
                     } else {
                         pdf.addImage(imageData, 'PNG', xGap / 2, positions + topGap, realWidth, realHeight);
-                        renderH += realHeight
-                        positions += realHeight
+                        renderH += (realHeight+lineGap)
+                        positions += (realHeight+lineGap)
                     }
                 })
               })
