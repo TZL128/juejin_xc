@@ -124,7 +124,7 @@
         {
           "command": "juejin_xc.sectionDownload",
           "group": "navigation",
-          "when": "activeViewlet == 'workbench.view.extension.juejin_xc_activitybar' && activeWebviewPanelId=~/^XC\\d+/"
+          "when": "activeViewlet == 'workbench.view.extension.juejin_xc_activitybar' && activeWebviewPanelId=~/^XC\\d+/ && !juejin_xc.sectionDownloading"
         }
       ]
     },

@@ -53,6 +53,22 @@ const updateFontSize = (
   updatePannel(xcSectionPanels, options, { type: "fs", value: options.fs });
 };
 
+const handleOver = (id: string) => {
+  const options = getField("options") as Record<string, any>;
+  const overList = options.overList
+    ? Array.isArray(options.overList)
+      ? options.overList
+      : []
+    : [];
+  if (overList.includes(id)) { return; }
+  options.overList = [...overList, id];
+  setField("options", options);
+};
+
+const hanldeDownload = () => {
+  setContext('juejin_xc.sectionDownloading', false);
+};
+
 export function activate(context: vscode.ExtensionContext) {
   setContext("juejin_xc.ready", isReady());
   let xcSectionPanels: Array<SectionPanel> = [],
@@ -185,18 +201,18 @@ export function activate(context: vscode.ExtensionContext) {
             }
           });
 
-          //我的小册列表才监听
-          xcSectionPanels.includes(sectionPanel) && sectionPanel.webview.onDidReceiveMessage((msg) => {
-            const options = getField("options") as Record<string, any>;
-            const overList = options.overList
-              ? Array.isArray(options.overList)
-                ? options.overList
-                : []
-              : [];
-            if (overList.includes(msg.id)) { return; }
-            options.overList = [...overList, msg.id];
-            setField("options", options);
+          sectionPanel.webview.onDidReceiveMessage((msg) => {
+            switch (msg.type) {
+              case 'over':
+                if (!xcSectionPanels.includes(sectionPanel)) { return; }
+                handleOver(msg.id);
+                break;
+              case 'downloadOver':
+                hanldeDownload();
+                break;
+            }
           });
+
         }
         //章节评论
         commentWebViewProvider.changeHtml(section.section_id);
@@ -281,6 +297,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('juejin_xc.sectionDownload', () => {
       [...xcSectionPanels, ...shopSectionPanels].forEach(panel => {
         if (panel.active) {
+          setContext('juejin_xc.sectionDownloading', true);
           panel.webview.postMessage({ type: 'download', value: `${panel.title}.pdf` });
         }
       });

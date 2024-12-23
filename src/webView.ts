@@ -3,7 +3,7 @@ import { xcContent, xcComment, xcMoreComment } from "@/api/request";
 import { getThemeCss, getCurrentTheme } from "@/config";
 import type { SectionParams, SectionPanel } from "#/global";
 
-const markdownBodyCss=`
+const markdownBodyCss = `
                 .markdown-body h1,
                 .markdown-body h2,
                 .markdown-body h3,
@@ -484,6 +484,7 @@ const sectionHtml = async (data: SectionParams, url: any): Promise<string> => {
               })
             }
             pdf.save(name);
+            vscode.postMessage({type:'downloadOver'});
         }
         })();
       </script>
