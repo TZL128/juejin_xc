@@ -28,24 +28,21 @@ VsCode最低版本  **1.70.0**
   ![image](https://user-images.githubusercontent.com/52518549/206612919-4d6ffb7e-b42c-45c8-b9fe-b9df03916242.png)  
   
 ### 字体大小设置
-win:**ctrl**  
-mac: **cmd**
-1. 快捷键 **ctrl+d** 变大
-2. 快捷键 **ctrl+x** 变小
+   win:**ctrl**  mac: **cmd**
+   1. 快捷键 **ctrl+d** 变大
+   2. 快捷键 **ctrl+x** 变小
 
-### 可以多章节同时阅读以及评论
+### 可以多章节同时阅读
 借助VsCode编辑器可以做到这一点  
 
-![image](https://github.com/TZL128/juejin_xc/assets/52518549/aa8fbde6-22a8-4ebf-9eac-b5140ed6f29b)
+### 支持小窗口阅读章节评论   
+能同时浏览评论和阅读小册内容
 
+### 支持章节下载
+能将小册导出为pdf
 
+## 声明
 
-章节评论  
-
-![image](https://github.com/TZL128/juejin_xc/assets/52518549/e774280e-31c5-44b4-aff7-2a0be99fafd3)
-
-
-### 声明
 本插件仅供学习交流使用，请勿用于商业用途。
 
 
