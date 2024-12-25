@@ -327,6 +327,15 @@ const errorHtml = () => `<!DOCTYPE html>
   </head>
   <body>
     <div class="error">出错啦~~</div>
+    <script>
+      const vscode = acquireVsCodeApi();
+      window.addEventListener('message', event => {
+        const data = event.data;
+        if (data.type === "download") {
+          vscode.postMessage({type:'downloadFail'});
+        }
+      })
+    </script>
   </body>
 </html>`;
 
@@ -465,7 +474,7 @@ const sectionHtml = async (data: SectionParams, url: any): Promise<string> => {
             for (let i = 0; i < doms.length; i+=batchNum) {
               const domsBatch = doms.slice(i, i + batchNum)
               await Promise.all(domsBatch.map(dom => getCanvasToImage(dom, xGap))).then((imageArr) => {
-                imageArr.map(({ imageData, imgWidth, imgHeight }) => {
+                imageArr.forEach(({ imageData, imgWidth, imgHeight },index) => {
                     const widthRatio = (a4W - xGap) / imgWidth
                     const heightRatio = (a4H - topGap) / imgHeight
                     const ratio = Math.min(widthRatio, heightRatio)
@@ -482,11 +491,12 @@ const sectionHtml = async (data: SectionParams, url: any): Promise<string> => {
                         renderH += (realHeight+lineGap)
                         positions += (realHeight+lineGap)
                     }
+                    vscode.postMessage({type:'downloadProgress',value:{progress:i+index+1,total:doms.length}});
                 })
               })
             }
             pdf.save(name);
-            vscode.postMessage({type:'downloadOver'});
+            vscode.postMessage({type:'downloadSuc'});
         }
         })();
       </script>
