@@ -10,6 +10,7 @@ import {
   setField,
   getField,
 } from "@/config";
+import { useDownloadStatusBar } from "./statusBar";
 
 const track = () => {
   vscode.workspace.onDidChangeConfiguration((e) => {
@@ -67,7 +68,11 @@ const handleOver = (id: string) => {
 
 const hanldeDownload = () => {
   setContext('juejin_xc.sectionDownloading', false);
+  destroyStatusBar();
 };
+
+const { createStatusBar, destroyStatusBar } = useDownloadStatusBar();
+
 
 export function activate(context: vscode.ExtensionContext) {
   setContext("juejin_xc.ready", isReady());
@@ -298,7 +303,9 @@ export function activate(context: vscode.ExtensionContext) {
       [...xcSectionPanels, ...shopSectionPanels].forEach(panel => {
         if (panel.active) {
           setContext('juejin_xc.sectionDownloading', true);
+          createStatusBar(`$(explorer-view-icon) 正在下载: ${panel.title}.pdf`);
           panel.webview.postMessage({ type: 'download', value: `${panel.title}.pdf` });
+
         }
       });
     })
