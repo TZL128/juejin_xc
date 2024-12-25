@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import * as path from "path";
 import { XCTreeView, ShopTreeView, XCViewItem } from "./treeView";
 import { sectionWebView, CommentWebView } from "./webView";
 import { Section, SectionPanel } from "#/global";
@@ -66,9 +65,10 @@ const handleOver = (id: string) => {
   setField("options", options);
 };
 
-const hanldeDownload = () => {
+const hanldeDownload = (err = false) => {
   setContext('juejin_xc.sectionDownloading', false);
   destroyStatusBar();
+  err && vscode.window.showErrorMessage("当前章节状态异常，无法下载");
 };
 
 const { createStatusBar, destroyStatusBar } = useDownloadStatusBar();
@@ -212,8 +212,11 @@ export function activate(context: vscode.ExtensionContext) {
                 if (!xcSectionPanels.includes(sectionPanel)) { return; }
                 handleOver(msg.id);
                 break;
-              case 'downloadOver':
+              case 'downloadSuc':
                 hanldeDownload();
+                break;
+              case 'downloadFail':
+                hanldeDownload(true);
                 break;
             }
           });

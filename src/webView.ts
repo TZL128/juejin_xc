@@ -327,6 +327,15 @@ const errorHtml = () => `<!DOCTYPE html>
   </head>
   <body>
     <div class="error">出错啦~~</div>
+    <script>
+      const vscode = acquireVsCodeApi();
+      window.addEventListener('message', event => {
+        const data = event.data;
+        if (data.type === "download") {
+          vscode.postMessage({type:'downloadFail'});
+        }
+      })
+    </script>
   </body>
 </html>`;
 
@@ -486,7 +495,7 @@ const sectionHtml = async (data: SectionParams, url: any): Promise<string> => {
               })
             }
             pdf.save(name);
-            vscode.postMessage({type:'downloadOver'});
+            vscode.postMessage({type:'downloadSuc'});
         }
         })();
       </script>
