@@ -71,7 +71,7 @@ const hanldeDownload = (err = false) => {
   err && vscode.window.showErrorMessage("当前章节状态异常，无法下载");
 };
 
-const { createStatusBar, destroyStatusBar } = useDownloadStatusBar();
+const { createStatusBar, destroyStatusBar, updateProgress } = useDownloadStatusBar();
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -217,6 +217,10 @@ export function activate(context: vscode.ExtensionContext) {
                 break;
               case 'downloadFail':
                 hanldeDownload(true);
+                break;
+              case 'downloadProgress':
+                const { progress, total } = msg.value;
+                updateProgress(progress, total);
                 break;
             }
           });
