@@ -22,11 +22,12 @@ export const xcList = async (): Promise<XC[]> => {
         summary,
         section_count,
         course_type,
+        price
       },
       user_info: { user_name },
     } = item;
     return {
-      is_buy,
+      is_buy: is_buy || price === 0,
       is_new,
       background_img,
       booklet_id,
@@ -180,11 +181,13 @@ export const xcCategoryList = async (category_id: string): Promise<XC[]> => {
         summary,
         section_count,
         course_type,
+        price
       },
       user_info: { user_name },
     } = item;
     const xc = {
-      is_buy,
+      is_buy: is_buy || price === 0,
+      price,
       is_new,
       background_img,
       booklet_id,
@@ -195,7 +198,7 @@ export const xcCategoryList = async (category_id: string): Promise<XC[]> => {
       section_updated_count,
       course_type,
     };
-    is_buy ? has.push(xc) : no.push(xc);
+    xc.is_buy ? has.push(xc) : no.push(xc);
   });
   return [...no, ...has];
 };
