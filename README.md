@@ -1,50 +1,94 @@
-## 如何使用？
+# 掘金小册
 
-### 兼容版本
-VsCode最低版本  **1.70.0**  
+VS Code 掘金小册阅读插件，支持多章节阅读、评论浏览、主题换肤、章节导出等功能。
 
-### 如何安装
-**VsCode中扩展商店** , **Marketplace**  
+## 目录
 
-### 设置账号信息  
+- [兼容版本](#兼容版本)
+- [安装](#安装)
+- [设置账号信息](#设置账号信息)
+- [如何获取 Cookie](#如何获取-cookie)
+- [功能特点](#功能特点)
+  - [换肤](#换肤)
+  - [字体大小设置](#字体大小设置)
+  - [免费小册阅读](#免费小册阅读)
+  - [多章节同时阅读](#多章节同时阅读)
+  - [小窗阅读章节评论](#小窗阅读章节评论)
+  - [章节导出](#章节导出)
+- [声明](#声明)
 
-安装后点击去设置cookie即可
-![image](https://github.com/TZL128/juejin_xc/assets/52518549/ab3654ac-764c-4a84-898b-a9e61740a9e5)
+## 兼容版本
 
+VS Code 最低版本 **1.70.0**
 
-### 如何获取cookie?
-打开掘金官网，按 f12 进入开发者模式。 检查网络请求，找到cookie复制粘贴即可。
+## 安装
+
+在 VS Code 扩展商店（Marketplace）中搜索 **掘金小册** 安装，或通过以下命令安装：
+
+```bash
+code --install-extension <extension-id>
+```
+
+## 设置账号信息
+
+安装后点击设置 Cookie 即可：
+
+![设置Cookie](https://github.com/TZL128/juejin_xc/assets/52518549/ab3654ac-764c-4a84-898b-a9e61740a9e5)
+
+## 如何获取 Cookie
+
+打开掘金官网，按 `F12` 进入开发者模式，在网络请求中找到 Cookie 并复制粘贴即可。
 
 ## 功能特点
 
 ### 换肤
-1. 插件**内置**了三种主题色  
 
-   ![image](https://user-images.githubusercontent.com/52518549/206610118-a04c1536-0133-4996-a3a2-2add8f1051f8.png)  
+**1. 内置主题**
 
-2. 如何自定义主题色
-  打开**settsing.json**配置文件找到**juejin_xc.options**这个字段，并在这个对象中添加如下格式主题代码。  
-  `"theme": [{"theme": "HY","name": "护眼","color": "#fff","backgroundColor": "#42b883"}]`  
-  ![image](https://user-images.githubusercontent.com/52518549/206612919-4d6ffb7e-b42c-45c8-b9fe-b9df03916242.png)  
-  
+插件内置了三种主题色：
+
+![内置主题](https://user-images.githubusercontent.com/52518549/206610118-a04c1536-0133-4996-a3a2-2add8f1051f8.png)
+
+**2. 自定义主题**
+
+打开 `settings.json` 配置文件，找到 `juejin_xc.options` 字段，添加如下格式的主题代码：
+
+```json
+"theme": [
+  {
+    "theme": "HY",
+    "name": "护眼",
+    "color": "#fff",
+    "backgroundColor": "#42b883"
+  }
+]
+```
+
+![自定义主题](https://user-images.githubusercontent.com/52518549/206612919-4d6ffb7e-b42c-45c8-b9fe-b9df03916242.png)
+
 ### 字体大小设置
-   win:**ctrl**  mac: **cmd**
-   1. 快捷键 **ctrl+d** 变大
-   2. 快捷键 **ctrl+x** 变小
 
-### 可以多章节同时阅读
-借助VsCode编辑器可以做到这一点  
+| 平台 | 修饰键 | 放大字体    | 缩小字体    |
+|------|--------|-------------|-------------|
+| Win  | Ctrl   | `Ctrl + D`  | `Ctrl + X`  |
+| Mac  | Cmd    | `Cmd + D`   | `Cmd + X`   |
 
-### 支持小窗口阅读章节评论   
-能同时浏览评论和阅读小册内容
+### 免费小册阅读
 
-### 支持章节下载
-能将小册导出为pdf
+将免费的掘金小册加入课程即可阅读。
+
+### 多章节同时阅读
+
+借助 VS Code 编辑器分屏功能，可同时打开并阅读多个章节。
+
+### 小窗阅读章节评论
+
+支持小窗口模式浏览评论，阅读小册的同时查看评论。
+
+### 章节导出
+
+右上角支持将小册章节导出为 **PDF** 文件。
 
 ## 声明
 
 本插件仅供学习交流使用，请勿用于商业用途。
-
-
-  
-
